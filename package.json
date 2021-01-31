@@ -1,0 +1,23 @@
+{
+  "name": "aleli",
+  "version": "0.0.1",
+  "description": "web framework developed with TDD ",
+  "source": "src/index.ts",
+  "main": "./dist/foo.js",           
+  "exports": "./dist/aleli.modern.js", 
+  "module": "./dist/aleli.module.js",
+  "unpkg": "./dist/aleli.umd.js",
+  "repository": "git@github.com:Remeic/aleli.git",
+  "author": "Giulio Fagioli <fagioli.giulio@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "cypress": "^6.3.0",
+    "microbundle": "^0.13.0",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "build": "microbundle",        
+    "dev": "microbundle watch"   
+  }
+}
