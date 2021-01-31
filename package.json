@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "microbundle",        
-    "dev": "microbundle watch"   
+    "dev": "microbundle watch",
+    "cypress:open": "cypress open"
   }
 }
