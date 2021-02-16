@@ -1,4 +1,4 @@
 {
   "fixturesFolder": false,
-  "testFiles": "**/*spec.tsx"
+  "testFiles": "**/*spec.ts"
 }
