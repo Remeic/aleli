@@ -9,3 +9,5 @@ jobs:
       - uses: cypress-io/github-action@v2
         with:
           browser: chrome
+  env:
+    CYPRESS_RECORD_KEY: $RECORD_KEY
