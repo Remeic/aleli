@@ -14,6 +14,6 @@ cache:
     # we also need to cache folder with Cypress binary
     - ~/.cache
 install:
-  - npm ci
+  - yarn ci
 script:
   - $(npm bin)/cypress run --record
