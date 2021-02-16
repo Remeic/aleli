@@ -1,13 +1,14 @@
-import VNode from './vnode'
+import {VNode, Children} from './vnode'
 
 function createElement(
   type: VNode["type"],
   props: VNode["props"],
-  children: Array<VNode["type"]>
+  ...children: Children[]
 ): VNode {
+  const actualChildren = children.length ? children : []
   return {
     type: type,
-    props: {...props},
+    props: {...props, children: actualChildren},
   };
 }
 
