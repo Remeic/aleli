@@ -6,8 +6,8 @@ function createElement(
   children: Array<VNode["type"]>
 ): VNode {
   return {
-    type: "div",
-    props: {},
+    type: type,
+    props: {...props},
   };
 }
 
