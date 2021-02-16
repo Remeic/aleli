@@ -20,5 +20,26 @@ describe("Testing createElement function, it return a vnode", () => {
     };
     expect(createElement("div", {}, "Hello")).to.deep.equal(expectedVNode);
   });
+
+  it("createElement return VNode where children is array that contain VNode", () => {
+    const expectedVNode: VNode = {
+      type: "div",
+      props: {
+        children: [
+          {
+            type: "span",
+            props: {
+              children: ["Hello"],
+            },
+          },
+        ],
+      },
+    };
+    expect(
+      createElement("div", {}, createElement("span", {}, "Hello"))
+    ).to.deep.equal(expectedVNode);
+  });
+
+
   
 });
