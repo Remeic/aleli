@@ -23,4 +23,12 @@ describe('Stringify DOM tree', () => {
       '<div>Alelí</div>'
     );
   });
+  it('serialize misc div and comment node', () => {
+    const element: HTMLElement = document.createElement('div');
+    const comment: Comment = document.createComment("Alelí")
+    element.appendChild(comment);
+    expect(domTreeStringify.serializeNode(element)).to.equal(
+      '<div><!--Alelí--></div>'
+    );
+  });
 });
