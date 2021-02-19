@@ -1,4 +1,3 @@
-
 interface DomTreeSerializer {
   serializeNode(node: HTMLElement): string;
   serializeNodeElement(node: HTMLElement): string;
@@ -9,17 +8,21 @@ export default class DomTreeStringify implements DomTreeSerializer {
 
 
   serializeNodeText(text: string): string {
-    return text
+    return text;
+  }
+
+  serializeNodeComment(text: string): string {
+    return `<!--${text}-->`;
   }
 
   serializeNodeElement(node: HTMLElement): string {
-    let resultString = "<" + node.localName;
+    let resultString = '<' + node.localName;
     for (let attribute of Array.from(node.attributes).sort()) {
       resultString += ` ${attribute.name}="${node.getAttribute(
         attribute.name
       )}"`;
     }
-    resultString += ">";
+    resultString += '>';
     let child: HTMLElement = node.firstChild as HTMLElement;
     while (child) {
       resultString += this.serializeNode(child as HTMLElement);
@@ -30,15 +33,17 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 
   serializeNode(node: HTMLElement): string {
-    let resultString: string = "";    
+    let resultString: string = '';
     let child: HTMLElement = node;
     while (child) {
-      if (child.nodeType === Node.ELEMENT_NODE) {
+      if (child.nodeType === Node.ELEMENT_NODE || child.nodeType === Node.DOCUMENT_NODE) {
         resultString += this.serializeNodeElement(child);
       }
-      if (child.nodeType === Node.TEXT_NODE) {
-
+      else if (child.nodeType === Node.TEXT_NODE) {
         resultString += this.serializeNodeText(child.textContent);
+      }
+      else if(child.nodeType === Node.COMMENT_NODE){
+        resultString += this.serializeNodeComment(child.textContent);
       }
       child = node.nextSibling as HTMLElement;
     }
@@ -46,4 +51,4 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 }
 
-export {DomTreeSerializer, DomTreeStringify}
+export { DomTreeSerializer, DomTreeStringify };
