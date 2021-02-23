@@ -6,21 +6,24 @@ interface DomTreeSerializer {
 
 export default class DomTreeStringify implements DomTreeSerializer {
 
+  encodeSpecialChar(text: string){
+    return text.replace(/&/g, '&amp;');
+  }
 
   serializeNodeText(text: string): string {
-    return text;
+    return this.encodeSpecialChar(text);
   }
 
   serializeNodeComment(text: string): string {
-    return `<!--${text}-->`;
+    return `<!--${this.encodeSpecialChar(text)}-->`;
   }
 
   serializeNodeElement(node: HTMLElement): string {
     let resultString = '<' + node.localName;
     for (let attribute of Array.from(node.attributes).sort()) {
-      resultString += ` ${attribute.name}="${node.getAttribute(
+      resultString += ` ${attribute.name}="${this.encodeSpecialChar(node.getAttribute(
         attribute.name
-      )}"`;
+      ))}"`;
     }
     resultString += '>';
     let child: HTMLElement = node.firstChild as HTMLElement;
