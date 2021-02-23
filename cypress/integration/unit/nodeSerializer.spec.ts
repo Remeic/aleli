@@ -23,12 +23,39 @@ describe('Stringify DOM tree', () => {
       '<div>Alelí</div>'
     );
   });
+
   it('serialize misc div and comment node', () => {
     const element: HTMLElement = document.createElement('div');
     const comment: Comment = document.createComment("Alelí")
     element.appendChild(comment);
     expect(domTreeStringify.serializeNode(element)).to.equal(
       '<div><!--Alelí--></div>'
+    );
+  });
+
+  it('serialize div encoding special char on text node', () => {
+    const element: HTMLElement = document.createElement('div');
+    const text: Text = document.createTextNode("Alelí&Giulio")
+    element.appendChild(text);
+    expect(domTreeStringify.serializeNode(element)).to.equal(
+      '<div>Alelí&amp;Giulio</div>'
+    );
+  });
+
+  it('serialize div encoding special char on comment node', () => {
+    const element: HTMLElement = document.createElement('div');
+    const comment: Comment = document.createComment("Alelí&Giulio")
+    element.appendChild(comment);
+    expect(domTreeStringify.serializeNode(element)).to.equal(
+      '<div><!--Alelí&amp;Giulio--></div>'
+    );
+  });
+
+  it('serialize div encoding special char on attribute value', () => {
+    const element: HTMLElement = document.createElement('div');
+    element.setAttribute('name','&Alelí')
+    expect(domTreeStringify.serializeNode(element)).to.equal(
+      `<div name="&amp;Alelí"></div>`
     );
   });
 });
