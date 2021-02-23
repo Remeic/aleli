@@ -2,15 +2,15 @@ import createElement from "@src/createElement";
 import {VNode} from "@src/types/vnode";
 
 describe("Testing createElement function, it return a vnode", () => {
-  it("createElement return VNode with type and other property empty", () => {
+  test("createElement return VNode with type and other property empty", () => {
     const expectedVNode: VNode = { type: "div", props: { children: [] } };
-    expect(createElement("div", {})).to.deep.equal(expectedVNode);
+    expect(createElement("div", {})).toEqual(expectedVNode);
   });
 
   it("createElement return VNode with type and props", () => {
     const props: Object = { name: "Alelí", children: [] };
     const expectedVNode: VNode = { type: "div", props };
-    expect(createElement("div", props)).to.deep.equal(expectedVNode);
+    expect(createElement("div", props)).toEqual(expectedVNode);
   });
 
   it("createElement return VNode where children is array that contain a primitive", () => {
@@ -18,7 +18,7 @@ describe("Testing createElement function, it return a vnode", () => {
       type: "div",
       props: { children: ["Hello"] },
     };
-    expect(createElement("div", {}, "Hello")).to.deep.equal(expectedVNode);
+    expect(createElement("div", {}, "Hello")).toEqual(expectedVNode);
   });
 
   it("createElement return VNode where children is array that contain VNode", () => {
@@ -37,9 +37,6 @@ describe("Testing createElement function, it return a vnode", () => {
     };
     expect(
       createElement("div", {}, createElement("span", {}, "Hello"))
-    ).to.deep.equal(expectedVNode);
+    ).toEqual(expectedVNode);
   });
-
-
-  
 });
