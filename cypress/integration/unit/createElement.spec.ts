@@ -1,5 +1,5 @@
-import { create } from "cypress/types/lodash";
-import { createElement, VNode } from "@src/createElement";
+import createElement from "@src/createElement";
+import {VNode} from "@src/types/vnode";
 
 describe("Testing createElement function, it return a vnode", () => {
   it("createElement return VNode with type and other property empty", () => {
