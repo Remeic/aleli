@@ -1,4 +1,5 @@
-import { createElement, VNode } from "@src/createElement";
+import createElement from "@src/createElement";
+import {VNode} from "@src/types/vnode";
 
 describe("Testing createElement function, it return a vnode", () => {
   test("createElement return VNode with type and other property empty", () => {
@@ -38,7 +39,4 @@ describe("Testing createElement function, it return a vnode", () => {
       createElement("div", {}, createElement("span", {}, "Hello"))
     ).toEqual(expectedVNode);
   });
-
-
-  
 });
