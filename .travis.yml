@@ -10,6 +10,7 @@ cache:
   # Caches $HOME/.npm when npm ci is default script command
   # Caches node_modules in all other cases
   npm: true
+  yarn: true
   directories:
     # we also need to cache folder with Cypress binary
     - ~/.cache
@@ -17,3 +18,5 @@ install:
   - yarn install --frozen-lockfile
 script:
   - yarn test
+after_success:
+  - $(npm bin)/codecov
