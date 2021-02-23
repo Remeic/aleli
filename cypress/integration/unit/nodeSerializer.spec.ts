@@ -58,4 +58,11 @@ describe('Stringify DOM tree', () => {
       `<div name="&amp;Alelí"></div>`
     );
   });
+
+  it('serialize special element that haven\'t children like textarea', () => {
+    const element: HTMLElement = document.createElement('img');
+    expect(domTreeStringify.serializeNode(element)).to.equal(
+      `<img />`
+    );
+  });
 });
