@@ -5,9 +5,27 @@ interface DomTreeSerializer {
 }
 
 export default class DomTreeStringify implements DomTreeSerializer {
+  
 
-  encodeSpecialChar(text: string){
-    return text.replace(/&/g, '&amp;');
+  private SPECIAL_ELEMENTS_NO_CHILDREN: Array<string> = [
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+  ];
+
+  private encodeSpecialChar(text: string) {
+    return text.replace(/&/g, "&amp;");
   }
 
   serializeNodeText(text: string): string {
@@ -17,15 +35,25 @@ export default class DomTreeStringify implements DomTreeSerializer {
   serializeNodeComment(text: string): string {
     return `<!--${this.encodeSpecialChar(text)}-->`;
   }
-
+  
   serializeNodeElement(node: HTMLElement): string {
-    let resultString = '<' + node.localName;
-    for (let attribute of Array.from(node.attributes).sort()) {
-      resultString += ` ${attribute.name}="${this.encodeSpecialChar(node.getAttribute(
-        attribute.name
-      ))}"`;
+    let resultString : string = ''
+    if (this.SPECIAL_ELEMENTS_NO_CHILDREN.indexOf(node.localName) > -1) {
+      resultString = this.serializeNodeElementWithoutChildren(node)
     }
-    resultString += '>';
+    else{
+      resultString = this.serializeNodeElementWithChildren(node)
+    }
+    return resultString
+  }
+
+  private serializeNodeElementWithoutChildren(node: HTMLElement): string {
+    let resultString: string = `<${node.localName} ${this.stringifyAttribute(node)}/>`
+    return resultString;
+  }
+
+  private serializeNodeElementWithChildren(node: HTMLElement): string {
+    let resultString = `<${node.localName}${this.stringifyAttribute(node)}>`;
     let child: HTMLElement = node.firstChild as HTMLElement;
     while (child) {
       resultString += this.serializeNode(child as HTMLElement);
@@ -35,17 +63,28 @@ export default class DomTreeStringify implements DomTreeSerializer {
     return resultString;
   }
 
+  private stringifyAttribute(node: HTMLElement) {
+    let attributeString: string = ''
+    for (let attribute of Array.from(node.attributes).sort()) {
+      attributeString += ` ${attribute.name}="${this.encodeSpecialChar(
+        node.getAttribute(attribute.name)
+      )}"`;
+    }
+    return attributeString;
+  }
+
   serializeNode(node: HTMLElement): string {
-    let resultString: string = '';
+    let resultString: string = "";
     let child: HTMLElement = node;
     while (child) {
-      if (child.nodeType === Node.ELEMENT_NODE || child.nodeType === Node.DOCUMENT_NODE) {
+      if (
+        child.nodeType === Node.ELEMENT_NODE ||
+        child.nodeType === Node.DOCUMENT_NODE
+      ) {
         resultString += this.serializeNodeElement(child);
-      }
-      else if (child.nodeType === Node.TEXT_NODE) {
+      } else if (child.nodeType === Node.TEXT_NODE) {
         resultString += this.serializeNodeText(child.textContent);
-      }
-      else if(child.nodeType === Node.COMMENT_NODE){
+      } else if (child.nodeType === Node.COMMENT_NODE) {
         resultString += this.serializeNodeComment(child.textContent);
       }
       child = node.nextSibling as HTMLElement;
