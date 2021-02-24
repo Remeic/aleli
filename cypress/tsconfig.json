@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["es5", "dom"],
+    "lib": ["es2015", "dom"],
     "types": ["cypress"],
     "baseUrl": "..",
     "paths": {
-        "@src/*": ["src/*"]
+        "@src/*": ["src/*"],
+        "@utils/*": ["cypress/utils/*"]
     }
   },
   "include": [
     "**/*.ts"
-  ]
+, "integration/unit/nodeSerializer.spec/ts"  ]
 }
