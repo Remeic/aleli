@@ -66,9 +66,10 @@ export default class DomTreeStringify implements DomTreeSerializer {
   private stringifyAttribute(node: HTMLElement) {
     let attributeString: string = ''
     for (let attribute of Array.from(node.attributes).sort()) {
-      attributeString += ` ${attribute.name}="${this.encodeSpecialChar(
-        node.getAttribute(attribute.name)
-      )}"`;
+      let attributeValue: string | null = node.getAttribute(attribute.name)
+      if(attributeValue){
+        attributeString += ` ${attribute.name}="${this.encodeSpecialChar(attributeValue)}"`;
+      }
     }
     return attributeString;
   }
@@ -83,9 +84,10 @@ export default class DomTreeStringify implements DomTreeSerializer {
       ) {
         resultString += this.serializeNodeElement(child);
       } else if (child.nodeType === Node.TEXT_NODE) {
-        resultString += this.serializeNodeText(child.textContent);
+        if(child.textContent) resultString += this.serializeNodeText(child.textContent);
+        
       } else if (child.nodeType === Node.COMMENT_NODE) {
-        resultString += this.serializeNodeComment(child.textContent);
+        if(child.textContent) resultString += this.serializeNodeComment(child.textContent);
       }
       child = node.nextSibling as HTMLElement;
     }
