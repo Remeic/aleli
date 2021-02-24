@@ -16,6 +16,7 @@ module.exports = {
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
   },
+  testEnvironment: 'jsdom',
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
