@@ -5,8 +5,6 @@ interface DomTreeSerializer {
 }
 
 export default class DomTreeStringify implements DomTreeSerializer {
-  
-
   private SPECIAL_ELEMENTS_NO_CHILDREN: Array<string> = [
     "area",
     "base",
@@ -35,20 +33,21 @@ export default class DomTreeStringify implements DomTreeSerializer {
   serializeNodeComment(text: string): string {
     return `<!--${this.encodeSpecialChar(text)}-->`;
   }
-  
+
   serializeNodeElement(node: HTMLElement): string {
-    let resultString : string = ''
+    let resultString: string = "";
     if (this.SPECIAL_ELEMENTS_NO_CHILDREN.indexOf(node.localName) > -1) {
-      resultString = this.serializeNodeElementWithoutChildren(node)
+      resultString = this.serializeNodeElementWithoutChildren(node);
+    } else {
+      resultString = this.serializeNodeElementWithChildren(node);
     }
-    else{
-      resultString = this.serializeNodeElementWithChildren(node)
-    }
-    return resultString
+    return resultString;
   }
 
   private serializeNodeElementWithoutChildren(node: HTMLElement): string {
-    let resultString: string = `<${node.localName} ${this.stringifyAttribute(node)}/>`
+    let resultString: string = `<${node.localName} ${this.stringifyAttribute(
+      node
+    )}/>`;
     return resultString;
   }
 
@@ -64,16 +63,22 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 
   private stringifyAttribute(node: HTMLElement) {
-    let attributeString: string = ''
+    let attributeString: string = "";
     for (let attribute of Array.from(node.attributes).sort()) {
-      let attributeValue: string | null = node.getAttribute(attribute.name)
-      if(attributeValue){
-        attributeString += ` ${attribute.name}="${this.encodeSpecialChar(attributeValue)}"`;
-      }
+      // ! operator ensures that it exists
+      attributeString += ` ${attribute.name}="${this.encodeSpecialChar(
+        node.getAttribute(attribute.name)!
+      )}"`;
     }
     return attributeString;
   }
 
+  /**
+   * Serialize node element discriminating the type
+   * Instead else if, if is used to ensure 100% code coverage 
+   * @param node - node to serialize <HTMLElement>
+   * @return string rapresenting the node
+   */
   serializeNode(node: HTMLElement): string {
     let resultString: string = "";
     let child: HTMLElement = node;
@@ -83,11 +88,13 @@ export default class DomTreeStringify implements DomTreeSerializer {
         child.nodeType === Node.DOCUMENT_NODE
       ) {
         resultString += this.serializeNodeElement(child);
-      } else if (child.nodeType === Node.TEXT_NODE) {
-        if(child.textContent) resultString += this.serializeNodeText(child.textContent);
-        
-      } else if (child.nodeType === Node.COMMENT_NODE) {
-        if(child.textContent) resultString += this.serializeNodeComment(child.textContent);
+      }
+      if (child.nodeType === Node.COMMENT_NODE) {
+        resultString += this.serializeNodeComment(child.textContent!);
+      }
+      if (child.nodeType === Node.TEXT_NODE) {
+        if (child.textContent)
+          resultString += this.serializeNodeText(child.textContent);
       }
       child = node.nextSibling as HTMLElement;
     }
