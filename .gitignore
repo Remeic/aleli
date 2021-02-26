@@ -2,3 +2,6 @@ node_modules
 videos/*
 .DS_Store
 coverage
+# stryker temp files
+.stryker-tmp
+reports
