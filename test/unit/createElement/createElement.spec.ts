@@ -13,12 +13,12 @@ describe("Testing createElement function, it return a vnode", () => {
     expect(createElement("div", props)).toEqual(expectedVNode);
   });
 
-  it("createElement return VNode where children is array that contain a primitive", () => {
-    const expectedVNode: VNode = {
+  it("createElement return VNode where props contain specified attribute ", () => {
+    const expectedVNode: VNode<{id: "Alelí"}> = {
       type: "div",
-      props: { children: ["Hello"] },
+      props: { children: ["Hello"], id: "Alelí" },
     };
-    expect(createElement("div", {}, "Hello")).toEqual(expectedVNode);
+    expect(createElement("div", {id: "Alelí"}, "Hello")).toHaveProperty('props.id',"Alelí");
   });
 
   it("createElement return VNode where children is array that contain VNode", () => {

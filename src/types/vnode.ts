@@ -11,6 +11,6 @@ type AllowedChildrenType =
 	| null
 	| undefined;
 
-export type Children = AllowedChildrenType[]
+export type Children = AllowedChildrenType[] 
 
 

@@ -1,10 +1,10 @@
 import {VNode, Children} from '../types/vnode'
 
-function createElement(
+function createElement<T ={}>(
   type: VNode["type"],
-  props: VNode["props"],
+  props: VNode["props"] & T,
   ...children: Children
-): VNode {
+): VNode<T> {
   const actualChildren = children.length ? children : []
   return {
     type: type,
