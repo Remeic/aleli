@@ -16,5 +16,12 @@ describe('Testing render function, it render VNode', () => {
     render(vnode, root)
     expect(serializer.serializeNode(root)).toEqual("<div><div></div></div>")
   });
+
+  it('render should render div with attribute like class', () => {
+    let vnode: VNode = { type: "div", props: { className: "Alelí", children: [""] }
+    let root : HTMLElement = document.createElement("div")
+    render(vnode, root)
+    expect(serializer.serializeNode(root)).toEqual(`<div><div className="Alelí"></div></div>`)
+  });
   
 })
