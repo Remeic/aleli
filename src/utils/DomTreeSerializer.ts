@@ -1,6 +1,7 @@
 interface DomTreeSerializer {
-  serializeNode(node: HTMLElement): string;
-  serializeNodeElement(node: HTMLElement): string;
+  serializeNode(node: Element): string;
+  serializeNodeElement(node: Element): string;
+  serializeNodeComment(text: string): string 
   serializeNodeText(text: string): string;
 }
 
@@ -41,33 +42,30 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 
   /**
-   * Serialize HTMLElement discriminating if can or not contains children
-   * @param node - HTMLElement
-   * @return string - string that rapresent HTMLElement
+   * Serialize Element discriminating if can or not contains children
+   * @param node - Element
+   * @return string - string that rapresent Element
    */
-  serializeNodeElement(node: HTMLElement): string {
-    let resultString: string = "";
-    if (this.SPECIAL_ELEMENTS_NO_CHILDREN.indexOf(node.localName) > -1) {
-      resultString = this.serializeNodeElementWithoutChildren(node);
+  serializeNodeElement(node: Element): string {
+    if (this.SPECIAL_ELEMENTS_NO_CHILDREN.includes(node.localName)) {
+      return this.serializeNodeElementWithoutChildren(node);
     } else {
-      resultString = this.serializeNodeElementWithChildren(node);
+      return this.serializeNodeElementWithChildren(node);
     }
-    return resultString;
   }
 
   /**
    * Serialize node element discriminating the type
    * Instead else if, if is used to ensure 100% code coverage
-   * @param node - node to serialize <HTMLElement>
+   * @param node - node to serialize <Element>
    * @return string rapresenting the node
    */
-  serializeNode(node: HTMLElement): string {
+  serializeNode(node: Element): string {
     let resultString: string = "";
-    let child: HTMLElement = node;
+    let child: Element = node;
     while (child) {
       if (
-        child.nodeType === Node.ELEMENT_NODE ||
-        child.nodeType === Node.DOCUMENT_NODE
+        child.nodeType === Node.ELEMENT_NODE 
       ) {
         resultString += this.serializeNodeElement(child);
       }
@@ -78,7 +76,7 @@ export default class DomTreeStringify implements DomTreeSerializer {
         if (child.textContent)
           resultString += this.serializeNodeText(child.textContent);
       }
-      child = node.nextSibling as HTMLElement;
+      child = node.nextSibling as Element;
     }
     return resultString;
   }
@@ -93,11 +91,11 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 
   /**
-   * Serialize HTMLElement that can't contains children
-   * @param node - HTMLElement to stringify (MUST without children)
-   * @return string - string that rapresent HTMLElement
+   * Serialize Element that can't contains children
+   * @param node - Element to stringify (MUST without children)
+   * @return string - string that rapresent Element
    */
-  private serializeNodeElementWithoutChildren(node: HTMLElement): string {
+  private serializeNodeElementWithoutChildren(node: Element): string {
     let resultString: string = `<${node.localName} ${this.stringifyAttribute(
       node
     )}/>`;
@@ -105,16 +103,16 @@ export default class DomTreeStringify implements DomTreeSerializer {
   }
 
   /**
-   * Serialize HTMLElement that can contains children
-   * @param node - HTMLElement to stringify (with children if specified)
-   * @return string - string that rapresent HTMLElement
+   * Serialize Element that can contains children
+   * @param node - Element to stringify (with children if specified)
+   * @return string - string that rapresent Element
    */
-  private serializeNodeElementWithChildren(node: HTMLElement): string {
+  private serializeNodeElementWithChildren(node: Element): string {
     let resultString = `<${node.localName}${this.stringifyAttribute(node)}>`;
-    let child: HTMLElement = node.firstChild as HTMLElement;
+    let child: Element = node.firstChild as Element;
     while (child) {
-      resultString += this.serializeNode(child as HTMLElement);
-      child = node.nextSibling as HTMLElement;
+      resultString += this.serializeNode(child as Element);
+      child = node.nextSibling as Element;
     }
     resultString += `</${node.localName}>`;
     return resultString;
@@ -123,10 +121,10 @@ export default class DomTreeStringify implements DomTreeSerializer {
   /**
    * Stringify attribute of HTML element
    * ! operator ensure attribute value exists and can't be null, because for get only available attribute
-   * @param node - HTMLElement with attributes
+   * @param node - Element with attributes
    * @return string - string that rapresent attributes
    */
-  private stringifyAttribute(node: HTMLElement): string {
+  private stringifyAttribute(node: Element): string {
     let attributeString: string = "";
     for (let attribute of Array.from(node.attributes).sort()) {
       attributeString += ` ${attribute.name}="${this.encodeSpecialChar(
