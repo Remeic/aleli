@@ -29,6 +29,8 @@
     "build": "microbundle",
     "dev": "microbundle watch",
     "test": "jest",
+    "mutation" : "npx stryker run",
+    "testPR": "yarn test && yarn mutation",
     "cypress:open": "cypress open"
   }
 }

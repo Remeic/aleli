@@ -1,6 +1,14 @@
 language: node_js
-node_js:
-  - 12
+
+matrix:
+  include:
+    - node_js: 12
+      if: type IN (push) AND type NOT IN (pull_request)
+      env: JOB="test"    # only on PR
+    - node_js: 12
+      if: type IN (pull_request)
+      env: JOB="testPR"
+      
 addons:
   apt:
     packages:
@@ -17,6 +25,6 @@ cache:
 install:
   - yarn install --frozen-lockfile
 script:
-  - yarn test
+  - yarn $JOB
 after_success:
   - $(npm bin)/codecov
