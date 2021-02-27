@@ -1,6 +1,6 @@
 export interface VNode<T = {}> {
   type: string;
-  props: T & { children?: Children }
+  props: T & { children?: Children, [other: string]: String | Children }
 }
 
 type AllowedChildrenType =
@@ -11,6 +11,4 @@ type AllowedChildrenType =
 	| null
 	| undefined;
 
-export type Children = AllowedChildrenType[] 
-
-
+export type Children = AllowedChildrenType[] | AllowedChildrenType
