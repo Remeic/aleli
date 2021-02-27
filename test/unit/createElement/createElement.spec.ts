@@ -4,7 +4,7 @@ import {VNode} from "@src/types/vnode";
 describe("Testing createElement function, it return a vnode", () => {
   test("createElement return VNode with type and other property empty", () => {
     const expectedVNode: VNode = { type: "div", props: { children: [] } };
-    expect(createElement("div", {})).toEqual(expectedVNode);
+    expect(createElement("div", {children: []})).toEqual(expectedVNode);
   });
 
   it("createElement return VNode with type and props", () => {
@@ -18,7 +18,7 @@ describe("Testing createElement function, it return a vnode", () => {
       type: "div",
       props: { children: ["Hello"], id: "Alelí" },
     };
-    expect(createElement("div", {id: "Alelí"}, "Hello")).toHaveProperty('props.id',"Alelí");
+    expect(createElement("div", {id: "Alelí", children: []}, "Hello")).toHaveProperty('props.id',"Alelí");
   });
 
   it("createElement return VNode where children is array that contain VNode", () => {
@@ -36,7 +36,7 @@ describe("Testing createElement function, it return a vnode", () => {
       },
     };
     expect(
-      createElement("div", {}, createElement("span", {}, "Hello"))
+      createElement("div", {children: []}, createElement("span", {children: []}, "Hello"))
     ).toEqual(expectedVNode);
   });
 });
