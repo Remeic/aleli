@@ -8,7 +8,7 @@ describe("Testing createElement function, it return a vnode", () => {
   });
 
   it("createElement return VNode with type and props", () => {
-    const props: Object = { name: "Alelí", children: [] };
+    const props: VNode["props"] = { name: "Alelí", children: [] };
     const expectedVNode: VNode = { type: "div", props };
     expect(createElement("div", props)).toEqual(expectedVNode);
   });
