@@ -64,4 +64,18 @@ describe("Testing render function, it render VNode", () => {
       `<div><div><span></span></div></div>`
     );
   });
+
+  it("render should render div with text node child", () => {
+    let vnode: VNode = {
+      type: "div",
+      props: {
+        children: ["Alelí"],
+      },
+    };
+    let root: HTMLElement = document.createElement("div");
+    aleliRenderer.render(vnode, root);
+    expect(serializer.serializeNode(root)).toEqual(
+      `<div><div>Alelí</div></div>`
+    );
+  });
 });
