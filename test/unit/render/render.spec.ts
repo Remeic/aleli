@@ -78,4 +78,24 @@ describe("Testing render function, it render VNode", () => {
       `<div><div>Alelí</div></div>`
     );
   });
+
+  it("render should render div with event listener", () => {
+    const mocked : Function = (): any => {}
+    const customProp = {
+      onClick: mocked,
+      children: ["Alelí"],
+    }
+    const vnode: VNode<typeof customProp> = {
+      type: "div",
+      props: {
+        onClick: mocked,
+        children: ["Alelí"],
+      },
+    };
+    const root: HTMLElement = document.createElement("div");
+    aleliRenderer.render(vnode, root);
+    const child : HTMLElement = root.firstChild as HTMLElement;
+    expect(child.onclick).not.toBeNull()
+    expect(child.onclick).toEqual(mocked)
+  });
 });
