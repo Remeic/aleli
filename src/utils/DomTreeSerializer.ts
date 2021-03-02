@@ -76,7 +76,7 @@ export default class DomTreeStringify implements DomTreeSerializer {
         if (child.textContent)
           resultString += this.serializeNodeText(child.textContent);
       }
-      child = node.nextSibling as Element;
+      child = child.nextSibling as Element;
     }
     return resultString;
   }
