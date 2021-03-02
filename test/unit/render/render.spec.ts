@@ -80,11 +80,11 @@ describe("Testing render function, it render VNode", () => {
   });
 
   it("render should render div with event listener", () => {
-    const mocked : Function = (): any => {}
+    const mocked: Function = (): any => {};
     const customProp = {
       onClick: mocked,
       children: ["Alelí"],
-    }
+    };
     const vnode: VNode<typeof customProp> = {
       type: "div",
       props: {
@@ -94,8 +94,30 @@ describe("Testing render function, it render VNode", () => {
     };
     const root: HTMLElement = document.createElement("div");
     aleliRenderer.render(vnode, root);
-    const child : HTMLElement = root.firstChild as HTMLElement;
-    expect(child.onclick).not.toBeNull()
-    expect(child.onclick).toEqual(mocked)
+    const child: HTMLElement = root.firstChild as HTMLElement;
+    expect(child.onclick).not.toBeNull();
+    expect(child.onclick).toEqual(mocked);
+  });
+
+  it("render should render multiple children", () => {
+    let vnode: VNode = {
+      type: "div",
+      props: {
+        children: [
+          "Alelí",
+          {
+            type: "span",
+            props: {
+              children: [],
+            },
+          },
+        ],
+      },
+    };
+    let root: HTMLElement = document.createElement("div");
+    aleliRenderer.render(vnode, root);
+    expect(serializer.serializeNode(root)).toEqual(
+      `<div><div>Alelí<span></span></div></div>`
+    );
   });
 });
