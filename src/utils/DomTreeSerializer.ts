@@ -112,7 +112,7 @@ export default class DomTreeStringify implements DomTreeSerializer {
     let child: Element = node.firstChild as Element;
     while (child) {
       resultString += this.serializeNode(child as Element);
-      child = node.nextSibling as Element;
+      child = child.nextSibling as Element;
     }
     resultString += `</${node.localName}>`;
     return resultString;
