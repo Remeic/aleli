@@ -63,7 +63,7 @@ export default class DomTreeStringify implements DomTreeSerializer {
   serializeNode(node: Element): string {
     let resultString: string = "";
     let child: Element = node;
-    while (child) {
+    
       if (
         child.nodeType === Node.ELEMENT_NODE 
       ) {
@@ -76,8 +76,7 @@ export default class DomTreeStringify implements DomTreeSerializer {
         if (child.textContent)
           resultString += this.serializeNodeText(child.textContent);
       }
-      child = child.nextSibling as Element;
-    }
+      
     return resultString;
   }
 
