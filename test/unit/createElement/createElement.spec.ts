@@ -29,12 +29,13 @@ describe("Testing createElement function, it return a vnode", () => {
           {
             type: "span",
             props: {
-              children: ["Hello"],
+              children: [{ type: "$TEXT", props: { textValue: "Hello", children: [] } }],
             },
           },
         ],
       },
     };
+    console.log( createElement("div", {children: []}, createElement("span", {children: []}, "Hello")))
     expect(
       createElement("div", {children: []}, createElement("span", {children: []}, "Hello"))
     ).toEqual(expectedVNode);
