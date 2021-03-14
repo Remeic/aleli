@@ -4,7 +4,13 @@ export interface VNode<T = {}> {
 	dom?: HTMLElement | Text 
 }
 
-type AllowedChildrenType = VNode<any>
+export type AllowedChildrenType =
+| VNode<any>
+| string
+| number
+| boolean
+| null
+| undefined;
 	
 
-export type Children = AllowedChildrenType[] 
+export type Children = AllowedChildrenType[] | AllowedChildrenType

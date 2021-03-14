@@ -6,4 +6,5 @@ export interface Renderer{
 
 export interface CustomHTMLElement extends HTMLElement{
 	[other: string]: any
+	_vnode?: VNode
 }

@@ -1,79 +1,87 @@
 import { VNode, Children } from "@src/types/vnode";
 import { Renderer, CustomHTMLElement } from "@src/types/renderer";
+import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
 
-interface ActualDom {
-  dom: HTMLElement | Text | null;
-  children: Array<ActualDom> | null;
-}
 export default class AleliRenderer implements Renderer {
-  private oldVNode: VNode | null;
-
-  constructor() {
-    this.oldVNode = null;
+  render(node: VNode, root: CustomHTMLElement): void {
+    if (!root._vnode) root._vnode = { type: "", props: { children: [] } };
+    this.diff(node, root, root._vnode);
   }
 
-  render(node: VNode, root: HTMLElement): void {
-    console.log("render",node)
-    this.diff(node, this.oldVNode, root);
-  }
+  private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
+    newNode.dom = !oldNode.dom ? this.createElement(newNode) : oldNode.dom;
+    this.insertElementIntoDom(dom, newNode);
 
-  private diff(
-    newNode: VNode,
-    oldNode: VNode | null = null,
-    dom: HTMLElement | Text 
-  ) {
-    if (!oldNode) {
-      if (newNode && newNode.type === "$TEXT") {
-        newNode.dom = this.renderTextNode(newNode);
-      } 
-      if (newNode && newNode.type !== "$TEXT") { 
-        console.log("rendr vnode",newNode.type)
-        newNode.dom = this.renderVNode(newNode);
-      }
-    } else {
-      newNode.dom = oldNode.dom 
-    }
+    let children: Array<VNode> = newNode.props.children as Array<VNode>;
 
-    if (dom && newNode.dom) dom.insertBefore(newNode.dom, null);
-
-    let children: Children = newNode.props && newNode.props.children ? newNode.props.children : [];
-    console.log("children",children)
     children.map((child, index) => {
-      let oldestChild: VNode | null = null;
-      if (oldNode && oldNode.props.children) {
-        oldestChild = oldNode.props.children.find((oldChild, oldChildindex) => {
-          return child.type === oldChild.type && index === oldChildindex;
-        }) as VNode;
-      }
-      console.log("child",child.dom)
-      this.diff(child,oldestChild,newNode.dom ? newNode.dom : null )
+      let oldestChild: VNode = this.findOldChildrenIfExists(
+        oldNode,
+        child,
+        index
+      );
+
+      this.diff(child, newNode.dom!, oldestChild);
     });
 
-    oldNode = oldNode ? oldNode : {type:'',props:{children: []}}
-    if(newNode){
-      Object.assign(oldNode,newNode)
+    this.removeOldChildren(oldNode);
+
+    if (isNotTextNode(newNode)) {
+      this.diffProps(oldNode!, newNode, newNode.dom as CustomHTMLElement);
+    }
+
+    Object.assign(oldNode, newNode);
+  }
+
+  private diffProps(
+    oldVNode: VNode,
+    newVNode: VNode,
+    htmlElement: CustomHTMLElement
+  ) {
+      Object.keys(newVNode.props)
+        .filter(this.isNotChildrenProp)
+        .forEach((prop) => {
+          if(newVNode.props[prop] !== oldVNode.props[prop]) {
+            this.setProperty(htmlElement, prop, newVNode.props);
+          }
+        });
+        Object.keys(oldVNode.props)
+        .filter(this.isNotChildrenProp)
+        .filter(prop => !(prop in newVNode.props))
+        .forEach((prop) => {
+            this.removeProperty(htmlElement,prop)
+        });
+    
+  }
+
+  private setProperty(
+    htmlElement: CustomHTMLElement,
+    prop: string,
+    props: { [other: string]: any; children: Children }
+  ) {
+    //Event listener attached with on<event> https://mzl.la/3rbCpxA
+    const name: string = prop.startsWith("on") ? prop.toLowerCase() : prop;
+
+    if (prop in htmlElement) {
+      htmlElement[name] = props[name];
+    } else {
+      htmlElement.setAttribute(name, props[prop as string]);
+    }
+  }
+
+  private removeProperty(htmlElement: CustomHTMLElement, prop: string) {
+    //Event listener attached with on<event> https://mzl.la/3rbCpxA
+    let name: string = prop.startsWith("on") ? prop.toLowerCase() : prop;
+    name = name === "className" ? "class" : name;
+    if (name in htmlElement) {
+      htmlElement[name] = null;
+    } else {
+      htmlElement.removeAttribute(name);
     }
   }
 
   private renderVNode(vnode: VNode): HTMLElement {
     const htmlElement: CustomHTMLElement = document.createElement(vnode.type);
-    // Object.keys(vnode.props)
-    //   .filter(this.isNotChildrenProp)
-    //   .forEach((prop) => {
-    //     // Event listener attached with on<event> https://mzl.la/3rbCpxA
-    //     let propName: string = prop.startsWith("on")
-    //       ? prop.toLowerCase()
-    //       : prop;
-    //     if (propName in htmlElement) {
-    //       htmlElement[propName] = vnode.props[prop];
-    //     } else {
-    //       htmlElement.setAttribute(prop, vnode.props[prop] as string);
-    //     }
-    //   });
-    // for (let children of vnode.props.children as Array<Children>) {
-    //   this.commit(children as any, htmlElement);
-    // }
-    // parent.appendChild(htmlElement);
     return htmlElement;
   }
 
@@ -83,5 +91,42 @@ export default class AleliRenderer implements Renderer {
 
   private isNotChildrenProp(prop: string) {
     return prop !== "children";
+  }
+
+  private insertElementIntoDom(
+    dom: CustomHTMLElement | Text,
+    newNode: VNode<{}>
+  ) {
+    newNode.dom && dom.insertBefore(newNode.dom, null);
+  }
+
+  private createElement(newNode: VNode<{}>): HTMLElement | Text {
+    if (newNode.type === "$TEXT") {
+      return this.renderTextNode(newNode);
+    } else {
+      return this.renderVNode(newNode);
+    }
+  }
+
+  private removeOldChildren(oldNode: VNode<{}>) {
+    this.getOldChildren(oldNode).map((oldChild) => {
+      oldChild.dom!.remove();
+    });
+  }
+
+  private getOldChildren(oldNode: VNode<{}>): VNode<{}>[] {
+    return oldNode.props.children as Array<VNode>;
+  }
+
+  private findOldChildrenIfExists(
+    oldNode: VNode<{}>,
+    child: VNode<{}>,
+    index: number
+  ): VNode {
+    return (
+      (this.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
+        return child.type === oldChild.type && index === oldChildindex;
+      }) as VNode) || { type: "", props: { children: [] } }
+    );
   }
 }
