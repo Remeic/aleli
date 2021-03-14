@@ -35,7 +35,6 @@ describe("Testing createElement function, it return a vnode", () => {
         ],
       },
     };
-    console.log( createElement("div", {children: []}, createElement("span", {children: []}, "Hello")))
     expect(
       createElement("div", {children: []}, createElement("span", {children: []}, "Hello"))
     ).toEqual(expectedVNode);
