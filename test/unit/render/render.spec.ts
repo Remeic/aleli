@@ -6,7 +6,7 @@ import {
 } from "@src/utils/DomTreeSerializer";
 import { Renderer } from "@src/types/renderer";
 
-describe("Testing render function, it render VNode", () => {
+describe("Testing render function, it render VNodes", () => {
   let serializer: DomTreeSerializer;
   let aleliRenderer: Renderer;
 
@@ -278,6 +278,43 @@ describe("Testing render function, it render VNode", () => {
     };
     aleliRenderer.render(updatedVnode, root);
     expect(child.onclick).toBe(null)
+  });
+
+
+  it("render should throw error if root element is Comment node", () => {
+    const customProp = {
+      children: [
+        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+      ],
+    };
+    const vnode: VNode<typeof customProp> = {
+      type: "div",
+      props: {
+        children: [
+          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+        ],
+      },
+    };
+    const root: Comment = document.createComment("Alelí Comment")
+    expect(() => aleliRenderer.render(vnode, root as unknown as HTMLElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
+  });
+
+  it("render should throw error if root element is Text node", () => {
+    const customProp = {
+      children: [
+        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+      ],
+    };
+    const vnode: VNode<typeof customProp> = {
+      type: "div",
+      props: {
+        children: [
+          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+        ],
+      },
+    };
+    const root: Comment = document.createTextNode("Alelí Comment")
+    expect(() => aleliRenderer.render(vnode, root as unknown as HTMLElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
   });
  
 });
