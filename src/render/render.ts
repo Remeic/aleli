@@ -4,8 +4,13 @@ import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
 
 export default class AleliRenderer implements Renderer {
   render(node: VNode, root: CustomHTMLElement): void {
-    if (!root._vnode) root._vnode = { type: "", props: { children: [] } };
-    this.diff(node, root, root._vnode);
+    if(Array<number>(Node.TEXT_NODE, Node.COMMENT_NODE).indexOf(root.nodeType) == -1){
+      if(!root._vnode) root._vnode = { type: "", props: { children: [] } };
+      this.diff(node, root, root._vnode);
+    }
+    else{
+      throw new Error('AleliRenderer, can\'t call render method on Text or Comment root node');
+    }
   }
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
@@ -73,11 +78,7 @@ export default class AleliRenderer implements Renderer {
     //Event listener attached with on<event> https://mzl.la/3rbCpxA
     let name: string = prop.startsWith("on") ? prop.toLowerCase() : prop;
     name = name === "className" ? "class" : name;
-    if (name in htmlElement) {
-      htmlElement[name] = null;
-    } else {
-      htmlElement.removeAttribute(name);
-    }
+    htmlElement.removeAttribute(name);
   }
 
   private renderVNode(vnode: VNode): HTMLElement {
