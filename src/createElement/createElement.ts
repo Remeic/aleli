@@ -1,14 +1,19 @@
-import {VNode, Children} from '../types/vnode'
+import { VNode, Children } from "../types/vnode";
+import {isVNode} from "../utils/detectNodeUtils"
 
-function createElement<T ={}>(
+function createElement<T = {}>(
   type: VNode["type"],
   props: VNode["props"] & T,
-  ...children: Children
+  ...children: Children[]
 ): VNode<T> {
-  const actualChildren = children.length ? children : []
+  let actualChildren = children.map((child) => {    
+    return isVNode(child)
+      ? child
+      : { type: "$TEXT", props: { textValue: child , children: [] } };
+  });
   return {
     type: type,
-    props: {...props, children: actualChildren},
+    props: { ...props, children: actualChildren },
   };
 }
 

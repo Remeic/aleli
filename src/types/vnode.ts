@@ -1,16 +1,16 @@
 export interface VNode<T = {}> {
   type: string;
-  props: T & { children?: Children }
+  props: T & { children: Children, [other: string]: any }
+	dom?: HTMLElement | Text 
 }
 
-type AllowedChildrenType =
-	| VNode<any>
-	| string
-	| number
-	| boolean
-	| null
-	| undefined;
+export type AllowedChildrenType =
+| VNode<any>
+| string
+| number
+| boolean
+| null
+| undefined;
+	
 
-export type Children = AllowedChildrenType[] 
-
-
+export type Children = AllowedChildrenType[] | AllowedChildrenType

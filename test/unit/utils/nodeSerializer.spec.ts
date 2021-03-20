@@ -68,6 +68,7 @@ describe('Stringify DOM tree', () => {
       `<div name="&amp;Alelí"></div>`
     );
   });
+  
 
   it('serialize special element that haven\'t children like img', () => {
     const element: HTMLElement = document.createElement('img');
@@ -167,6 +168,15 @@ describe('Stringify DOM tree', () => {
     );
   });
 
-  
+  it('serialize div with misc children', () => {
+    const parent: HTMLElement = document.createElement('div');
+    const firstChild: HTMLElement = document.createElement('span');
+    const secondChild: Text = document.createTextNode("Alelí");
+    parent.appendChild(firstChild)
+    parent.appendChild(secondChild)
+    expect(domTreeStringify.serializeNode(parent)).toEqual(
+      `<div><span></span>Alelí</div>`
+    );
+  });
 
 });
