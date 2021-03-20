@@ -215,7 +215,7 @@ describe("Testing render function, it render VNodes", () => {
     );
   });
 
-  it("render should not set again prop if it isnt change ", () => {
+  it("render should change parent dom node if change ", () => {
     let vnode: VNode<{ className: "Alelí" }> = {
           type: "div",
           props: {
@@ -229,7 +229,7 @@ describe("Testing render function, it render VNodes", () => {
       `<div><div class="Alelí"></div></div>`
     );
     let updatedVnode: VNode<{ className: "Alelí" }> = {
-      type: "div",
+      type: "span",
       props: {
         className: "Alelí",
         children: [],
@@ -237,7 +237,7 @@ describe("Testing render function, it render VNodes", () => {
     };
     aleliRenderer.render(updatedVnode, root);
     expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Alelí"></div></div>`
+      `<div><span class="Alelí"></span></div>`
     );
   });
 
