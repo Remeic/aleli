@@ -130,7 +130,16 @@ export default class AleliRenderer implements Renderer {
   ): VNode {
     return (
       (this.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
-        return child.type === oldChild.type && index === oldChildindex;
+        let result = undefined
+        if(child.props.key && oldChild.props.key) {  
+          if((child.props.key === oldChild.props.key) && (child.type === oldChild.type)){
+           result = oldChild
+          }
+        }else {
+          if(child.type === oldChild.type && index === oldChildindex )
+            result = oldChild
+        }
+        return result
       }) as VNode) || { type: "", props: { children: [] } }
     );
   }
