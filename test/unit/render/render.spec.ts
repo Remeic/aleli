@@ -342,5 +342,18 @@ describe("Testing render function, it render VNodes", () => {
     const root: Comment = document.createTextNode("Alelí Comment")
     expect(() => aleliRenderer.render(vnode, root as unknown as HTMLElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
   });
+
+  it("render should not set key attribute", () => {
+    let vnode: VNode<{ key: 1 }> = {
+      type: "div",
+      props: { key: 1, children: [] },
+    };
+    let root: HTMLElement = document.createElement("div");
+    aleliRenderer.render(vnode, root);
+    expect(serializer.serializeNode(root)).toEqual(
+      `<div><div></div></div>`
+    );
+  });
+
  
 });
