@@ -70,7 +70,7 @@ export default class AleliRenderer implements Renderer {
   ) {
     //Event listener attached with on<event> https://mzl.la/3rbCpxA
     const name: string = prop.startsWith("on") ? prop.toLowerCase() : prop;
-
+    if(prop === 'key') { return }
     if (prop in htmlElement) {
       htmlElement[name] = props[name];
     } else {
