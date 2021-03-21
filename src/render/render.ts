@@ -6,6 +6,10 @@ export default class AleliRenderer implements Renderer {
   render(node: VNode, root: CustomHTMLElement): void {
     if(Array<number>(Node.TEXT_NODE, Node.COMMENT_NODE).indexOf(root.nodeType) == -1){
       if(!root._vnode) root._vnode = { type: "", props: { children: [] } };
+      if(node.type !== root._vnode.type){
+        root._vnode.dom && root._vnode.dom.remove()
+        root._vnode = { type: "", props: { children: [] } };
+      }
       this.diff(node, root, root._vnode);
     }
     else{
