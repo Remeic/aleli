@@ -56,4 +56,78 @@ describe("render method should call setProperty only when needed", () => {
     expect(spySetProperty).toBeCalledTimes(1)
   });
 
+  it("render shouldn't call create element if not necessary, using key attribute ", () => {
+    // @ts-ignore
+    const spyCreateElement = jest.spyOn(AleliRenderer.prototype, "createElement")
+
+    const vnode: VNode<{ className: "Alelí" }> = {
+          type: "div",
+          props: {
+            className: "Alelí",
+            children: [
+              {
+                type: "div",
+                props: {
+                  className: "First",
+                  key: 1,
+                  children: [],
+                },
+              },
+              {
+                type: "span",
+                props: {
+                  className: "Second",
+                  key: 2,
+                  children: [],
+                },
+              },
+              {
+                type: "button",
+                props: {
+                  className: "third",
+                  key: 3,
+                  children: [],
+                },
+              }
+            ],
+          },
+        };
+    const root: HTMLElement = document.createElement("div");
+    aleliRenderer.render(vnode, root);
+    const updatedVnode: VNode<{ className: "Alelí" }> = {
+      type: "div",
+      props: {
+        className: "Alelí",
+        children: [
+          {
+            type: "span",
+            props: {
+              className: "Second",
+              key: 2,
+              children: [],
+            },
+          },
+          {
+            type: "div",
+            props: {
+              className: "First",
+              key: 1,
+              children: [],
+            },
+          },
+          {
+            type: "button",
+            props: {
+              className: "third",
+              key: 3,
+              children: [],
+            },
+          }
+        ],
+      },
+    };
+    aleliRenderer.render(updatedVnode, root);
+    expect(spyCreateElement).toBeCalledTimes(4)
+  });
+
 })

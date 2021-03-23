@@ -5,9 +5,8 @@ import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
 export default class AleliRenderer implements Renderer {
   render(node: VNode, root: CustomHTMLElement): void {
     if(Array<number>(Node.TEXT_NODE, Node.COMMENT_NODE).indexOf(root.nodeType) == -1){
-      if(!root._vnode) root._vnode = { type: "", props: { children: [] } };
-      if(node.type !== root._vnode.type){
-        root._vnode.dom && root._vnode.dom.remove()
+      if(!root._vnode || node.type !== root._vnode.type){
+        root._vnode && root._vnode.dom && root._vnode.dom.remove()
         root._vnode = { type: "", props: { children: [] } };
       }
       this.diff(node, root, root._vnode);
@@ -69,7 +68,7 @@ export default class AleliRenderer implements Renderer {
   ) {
     //Event listener attached with on<event> https://mzl.la/3rbCpxA
     const name: string = prop.startsWith("on") ? prop.toLowerCase() : prop;
-
+    if(prop === 'key') { return }
     if (prop in htmlElement) {
       htmlElement[name] = props[name];
     } else {
@@ -129,7 +128,16 @@ export default class AleliRenderer implements Renderer {
   ): VNode {
     return (
       (this.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
-        return child.type === oldChild.type && index === oldChildindex;
+        let result = undefined
+        if(child.props.key && oldChild.props.key) {  
+          if((child.props.key === oldChild.props.key) && (child.type === oldChild.type)){
+           result = oldChild
+          }
+        }else {
+          if(child.type === oldChild.type && index === oldChildindex )
+            result = oldChild
+        }
+        return result
       }) as VNode) || { type: "", props: { children: [] } }
     );
   }
