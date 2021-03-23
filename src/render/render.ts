@@ -1,6 +1,7 @@
 import { VNode, Children } from "@src/types/vnode";
 import { Renderer, CustomHTMLElement } from "@src/types/renderer";
 import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
+import AleliComponent from "@src/components";
 
 export default class AleliRenderer implements Renderer {
   render(node: VNode, root: CustomHTMLElement): void {
@@ -17,27 +18,33 @@ export default class AleliRenderer implements Renderer {
   }
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
-    newNode.dom = !oldNode.dom ? this.createElement(newNode) : oldNode.dom;
-    this.insertElementIntoDom(dom, newNode);
-
-    let children: Array<VNode> = newNode.props.children as Array<VNode>;
-
-    children.map((child, index) => {
-      let oldestChild: VNode = this.findOldChildrenIfExists(
-        oldNode,
-        child,
-        index
-      );
-      this.diff(child, newNode.dom!, oldestChild);
-    });
-
-    this.removeOldChildren(oldNode);
-
-    if (isNotTextNode(newNode)) {
-      this.diffProps(oldNode!, newNode, newNode.dom as CustomHTMLElement);
+    if( newNode.type instanceof AleliComponent){
+      this.diff(newNode.type.render(),dom,oldNode)
     }
-
-    Object.assign(oldNode, newNode);
+    else{
+      newNode.dom = !oldNode.dom ? this.createElement(newNode) : oldNode.dom;
+      this.insertElementIntoDom(dom, newNode);
+  
+      let children: Array<VNode> = newNode.props.children as Array<VNode>;
+  
+      children.map((child, index) => {
+        let oldestChild: VNode = this.findOldChildrenIfExists(
+          oldNode,
+          child,
+          index
+        );
+        this.diff(child, newNode.dom!, oldestChild);
+      });
+  
+      this.removeOldChildren(oldNode);
+  
+      if (isNotTextNode(newNode)) {
+        this.diffProps(oldNode!, newNode, newNode.dom as CustomHTMLElement);
+      }
+  
+      Object.assign(oldNode, newNode);
+    }
+    
   }
 
   private diffProps(
@@ -84,7 +91,7 @@ export default class AleliRenderer implements Renderer {
   }
 
   private renderVNode(vnode: VNode): HTMLElement {
-    const htmlElement: CustomHTMLElement = document.createElement(vnode.type);
+    const htmlElement: CustomHTMLElement = document.createElement(vnode.type as string);
     return htmlElement;
   }
 
