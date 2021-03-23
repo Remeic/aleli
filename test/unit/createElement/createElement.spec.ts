@@ -1,4 +1,6 @@
+import AleliComponent from "@src/components";
 import createElement from "@src/createElement";
+import Component from "@src/types/component";
 import {VNode} from "@src/types/vnode";
 
 describe("Testing createElement function, it return a vnode", () => {
@@ -40,3 +42,40 @@ describe("Testing createElement function, it return a vnode", () => {
     ).toEqual(expectedVNode);
   });
 });
+
+
+describe('Testing createElement function when class components are used', () => {
+  class AComponent extends AleliComponent{
+    constructor(){super()}
+    render(): VNode<{}> {
+      return {
+        type: 'div',
+        props: {
+          children: []
+        }
+      }
+    }
+  }
+
+  it('createElement take function as type', () => {
+    let TestComponent: Component = new AComponent()
+    const expectedVNode: VNode = {
+      type: TestComponent,
+      props: {
+        children: [
+        ],
+      },
+    };
+    expect(
+      createElement(TestComponent, {children: []})
+    ).toEqual(expectedVNode);
+  });
+
+  it('createElement returned VNode type is type of function', () => {
+    let TestComponent: Component = new AComponent()
+    expect(
+      createElement(TestComponent, {children: []}).type
+    ).toBeInstanceOf(AComponent)
+  });
+  
+})
