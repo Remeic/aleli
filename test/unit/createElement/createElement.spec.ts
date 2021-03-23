@@ -76,6 +76,9 @@ describe('Testing createElement function when class components are used', () => 
     expect(
       createElement(TestComponent, {children: []}).type
     ).toBeInstanceOf(AComponent)
+    expect(
+      createElement(TestComponent, {children: []}).type
+    ).toBeInstanceOf(AleliComponent)
   });
   
 })
