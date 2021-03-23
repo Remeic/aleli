@@ -28,7 +28,6 @@ export default class AleliRenderer implements Renderer {
         child,
         index
       );
-
       this.diff(child, newNode.dom!, oldestChild);
     });
 
