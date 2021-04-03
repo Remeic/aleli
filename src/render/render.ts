@@ -19,7 +19,7 @@ export default class AleliRenderer implements Renderer {
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
     if( newNode.type instanceof AleliComponent){
-      this.diff(newNode.type.render(),dom,oldNode)
+      this.diff(newNode.type.render(newNode.props),dom,oldNode)
     }
     else{
       newNode.dom = !oldNode.dom ? this.createElement(newNode) : oldNode.dom;
