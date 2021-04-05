@@ -6,12 +6,12 @@ import {
   DomTreeStringify,
 } from "@src/utils/DomTreeSerializer";
 import AleliComponent from "@src/components" 
-import TestComponent from "../classComponent/TestComponent.mock"
+import TestComponent from "../classComponent/TestComponentWithState.mock"
 import { mock, verify, instance,spy, when, deepEqual, reset } from "ts-mockito";
 
 
-describe("Testing render function of Class Components without state, it render VNodes", () => {
-  
+
+describe('Testing render function of Class Components with state, it render VNodes', () => {
   let serializer: DomTreeSerializer;
   let aleliRenderer: Renderer;
   let Component: AleliComponent
@@ -26,11 +26,7 @@ describe("Testing render function of Class Components without state, it render V
     mockedInstanceComponent = instance(mockedComponent);
   });
 
-  beforeEach(() => {
-    reset(mockedComponent)
-  })
-
-  it('render method should render class components ', () => {
+  it('render method should render class component when a value of state is used ', () => {
     let root: HTMLElement = document.createElement("div");
     const props: VNode["props"] = {
       children: []
@@ -38,6 +34,7 @@ describe("Testing render function of Class Components without state, it render V
     when(mockedComponent.render(deepEqual(props))).thenReturn({
       type:"div",
       props: {
+        id:1,
         children:[]
       }
     })
@@ -49,10 +46,10 @@ describe("Testing render function of Class Components without state, it render V
     }
     aleliRenderer.render(vnode, root);
     let child: HTMLElement  = root.firstChild! as HTMLElement
-    expect(child.localName).toEqual("div");
+    expect(child).toHaveProperty('id','1')
   });
 
-  it('render method should render class components with props ', () => {
+  it('render method should render class component with state used across rerenders ', () => {
     let root: HTMLElement = document.createElement("div");
     const props: VNode["props"] = {
       children: []
@@ -60,7 +57,7 @@ describe("Testing render function of Class Components without state, it render V
     when(mockedComponent.render(deepEqual(props))).thenReturn({
       type:"div",
       props: {
-        id: 'Alelí',
+        id:1,
         children:[]
       }
     })
@@ -72,40 +69,11 @@ describe("Testing render function of Class Components without state, it render V
     }
     aleliRenderer.render(vnode, root);
     let child: HTMLElement  = root.firstChild! as HTMLElement
-    expect(child.localName).toEqual("div");
-    expect(child).toHaveProperty("id",'Alelí')
-  });
-
-  it('render method should render class components with passed children ', () => {
-    let root: HTMLElement = document.createElement("div");
-    const props: VNode["props"] =  {
-      children: [{
-        type: "$TEXT",
-        props: {
-          textValue: "Alelí",
-          children: []
-        }
-      }]
-    }
-    when(mockedComponent.render(deepEqual(props))).thenReturn({
-      type:"div",
-      props: {
-        children: [{
-          type: "$TEXT",
-          props: {
-            textValue: "Alelí",
-            children: []
-          }
-        }]
-      }
-    })
-    let vnode: VNode = {
-      type: mockedInstanceComponent,
-      props
-    }
+    expect(child).toHaveProperty('id','1')
+    Component.setState({test:'Hello World!', id:2})
     aleliRenderer.render(vnode, root);
-    let child: HTMLElement  = root.firstChild! as HTMLElement
-    expect(child.localName).toEqual("div");
-    expect(child.firstChild!.textContent).toEqual("Alelí");
+    expect(child).toHaveProperty('id','1')
+    expect(Component.getState()).toHaveProperty('id',2)
+    expect(Component.getState()).toHaveProperty('test','Hello World!')
   });
 })
