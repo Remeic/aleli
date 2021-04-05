@@ -18,7 +18,11 @@ export default class AleliRenderer implements Renderer {
   }
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
-    if( newNode.type instanceof AleliComponent){
+    if(typeof newNode.type !== 'string' ){
+      if(!newNode.type.isMounted()){
+        newNode.type.mounting()
+        newNode.type.mount()
+      }
       this.diff(newNode.type.render(newNode.props),dom,oldNode)
     }
     else{

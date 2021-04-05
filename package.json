@@ -22,6 +22,7 @@
     "jest": "^26.6.3",
     "microbundle": "^0.13.0",
     "ts-jest": "^26.5.1",
+    "ts-mockito": "^2.6.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
@@ -29,7 +30,7 @@
     "build": "microbundle",
     "dev": "microbundle watch",
     "test": "jest",
-    "mutation" : "npx stryker run",
+    "mutation": "npx stryker run",
     "testPR": "yarn test && yarn mutation",
     "cypress:open": "cypress open"
   }
