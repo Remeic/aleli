@@ -46,6 +46,9 @@ describe("Testing createElement function, it return a vnode", () => {
 
 describe('Testing createElement function when class components are used', () => {
   class AComponent extends AleliComponent{
+    mounting(): void {
+      throw new Error("Method not implemented.");
+    }
     constructor(){super()}
     render(): VNode<{}> {
       return {
