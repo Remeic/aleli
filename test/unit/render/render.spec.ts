@@ -1,359 +1,351 @@
 import { VNode } from "@src/types/vnode";
 import AleliRenderer from "@src/render";
-import {
-  DomTreeSerializer,
-  DomTreeStringify,
-} from "@src/utils/DomTreeSerializer";
-import { Renderer } from "@src/types/renderer";
 
-describe("Testing render function, it render VNodes", () => {
-  let serializer: DomTreeSerializer;
-  let aleliRenderer: Renderer;
+describe("AleliRenderer method setProperty", () => {
+  let aleliRenderer: AleliRenderer;
 
   beforeAll(() => {
-    serializer = new DomTreeStringify();
     aleliRenderer = new AleliRenderer();
   });
 
-  it("render should render empty div", () => {
-    let vnode: VNode = {
-      type: "div",
-      props: {
-        children: [],
-      },
+  it("AleliRenderer method setProperty should set id property to HTMLElement", () => {
+    const htmlElement = document.createElement("div");
+    const props: VNode["props"] = {
+      id: 1,
+      children: [],
     };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual("<div><div></div></div>");
+    aleliRenderer.setProperty(htmlElement, "id", props);
+    expect(htmlElement).toHaveProperty("id", "1");
   });
 
-  it("render should render div with attribute like class", () => {
-    let vnode: VNode<{ className: "Alelí" }> = {
-          type: "div",
-          props: {
-            className: "Alelí",
-            children: [],
-          },
-        };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Alelí"></div></div>`
-    );
-  });
-
-  it("render should render div with user defined attribute", () => {
-    let vnode: VNode<{ name: "Alelí" }> = {
-      type: "div",
-      props: { name: "Alelí", children: [] },
+  it("AleliRenderer method setProperty should throw error if prop key is not in props", () => {
+    const htmlElement = document.createElement("div");
+    const propName : string = "color"
+    const props: VNode["props"] = {
+      id: 1,
+      children: [],
     };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div name="Alelí"></div></div>`
-    );
+    expect(() => aleliRenderer.setProperty(htmlElement, propName, props)).toThrowError(`Error setProperty: prop ${propName} is not present in props`)
   });
 
-  it("render should render div with span child", () => {
-    let vnode: VNode = {
-      type: "div",
-      props: {
-        children: [{ type: "span", props: { children: [] } }],
-      },
+  it("AleliRenderer method setProperty should throw error if prop key is not in props", () => {
+    const htmlElement = document.createElement("div");
+    const propName : string = "color"
+    const props: VNode["props"] = {
+      id: 1,
+      children: [],
     };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div><span></span></div></div>`
-    );
+    expect( () => aleliRenderer.setProperty(htmlElement, propName, props)).toThrowError(`Error setProperty: prop ${propName} is not present in props`)
   });
 
-  it("render should render div with text node child", () => {
-    let vnode: VNode = {
-      type: "div",
-      props: {
-        children: [
-          { type: "$TEXT", props: { textValue: "Alelí", children: [] } },
-        ],
-      },
-    };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div>Alelí</div></div>`
-    );
-  });
-
-  it("render should render div with event listener", () => {
+  it("AleliRenderer method setProperty should set event listener", () => {
     const mocked : Function = () => {}
-    const customProp = {
-      onClick: mocked,
-      children: [
-        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-      ],
-    };
-    const vnode: VNode<typeof customProp> = {
+    let props: VNode["props"] = {
+        onClick:  mocked,
+        children: [],
+    }
+    const htmlElement = document.createElement("div");
+    aleliRenderer.setProperty(htmlElement, 'onClick', props);
+    expect(htmlElement).toHaveProperty('onclick')
+    expect(typeof htmlElement.onclick!).toBe('function')
+  });
+
+  it("AleliRenderer method setProperty should not set key prop", () => {
+    let props: VNode["props"] = {
+        key:  "1",
+        children: [],
+    }
+    const htmlElement = document.createElement("div");
+    aleliRenderer.setProperty(htmlElement, 'key', props);
+    expect(htmlElement).not.toHaveProperty('key')
+  });
+});
+
+describe("AleliRenderer method should call setProperty only when needed", () => {
+  let aleliRenderer: AleliRenderer;
+
+  beforeAll(() => {
+    aleliRenderer = new AleliRenderer();
+  });
+
+  it("render should call setProperty one time for each prop", () => {
+    // @ts-ignore
+    const spySetProperty = jest.spyOn(AleliRenderer.prototype, "setProperty");
+
+    const vnode: VNode<{ className: "Alelí" }> = {
       type: "div",
       props: {
-        onClick:  mocked,
-        children: [
-          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-        ],
+        className: "Alelí",
+        id: "Hello",
+        children: [],
       },
     };
     const root: HTMLElement = document.createElement("div");
     aleliRenderer.render(vnode, root);
-    const child: HTMLElement = root.firstChild! as HTMLElement;
-    expect(child).toHaveProperty('onclick')
-    expect(typeof child.onclick!).toBe('function')
+    expect(spySetProperty).toBeCalledTimes(2);
   });
 
+  it("render shouldn't call update prop if it is change ", () => {
+    // @ts-ignore
+    const spySetProperty = jest.spyOn(AleliRenderer.prototype, "setProperty");
 
-  it("render should render multiple children", () => {
-    let vnode: VNode = {
+    const vnode: VNode<{ className: "Alelí" }> = {
       type: "div",
       props: {
-        children: [
-          { type: "$TEXT", props: { textValue: "Alelí", children: [] } },
-          {
-            type: "span",
-            props: {
-              children: [],
-            },
-          },
-        ],
-      },
-    };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div>Alelí<span></span></div></div>`
-    );
-  });
-
-  it("render should replace dom node when node type change", () => {
-    let vnode: VNode = {
-      type: "div",
-      props: {
-        children: [
-          {
-            type: "span",
-            props: {
-              children: [],
-            },
-          },
-        ],
-      },
-    };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    let updateVnode: VNode = {
-      type: "div",
-      props: {
-        children: [
-          {
-            type: "h1",
-            props: {
-              children: [],
-            },
-          },
-        ],
-      },
-    };
-    aleliRenderer.render(updateVnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div><h1></h1></div></div>`
-    );
-  });
-
-  it("render should diffing props if them change", () => {
-    let vnode: VNode<{ className: "Alelí" }> = {
-          type: "div",
-          props: {
-            className: "Alelí",
-            children: [],
-          },
-        };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    let updateVnode: VNode<{ id:'first' }> = {
-      type: "div",
-      props: {
-        id:"first",
+        className: "Alelí",
         children: [],
       },
     };
-    aleliRenderer.render(updateVnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div id="first"></div></div>`
-    );
-  });
-
-  it("render should update prop if it is change ", () => {
-    let vnode: VNode<{ className: "Alelí" }> = {
-          type: "div",
-          props: {
-            className: "Alelí",
-            children: [],
-          },
-        };
-    let root: HTMLElement = document.createElement("div");
+    const root: HTMLElement = document.createElement("div");
     aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Alelí"></div></div>`
-    );
-    let updatedVnode: VNode<{ className: "Hello Alelí" }> = {
+    expect(spySetProperty).toBeCalledTimes(1);
+
+    const updatedVnode: VNode<{ className: "Alelí" }> = {
       type: "div",
-      props: {
-        className: "Hello Alelí",
-        children: [],
-      },
-    };
-    aleliRenderer.render(updatedVnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Hello Alelí"></div></div>`
-    );
-  });
-
-  it("render should change parent dom node if change ", () => {
-    let vnode: VNode<{ className: "Alelí" }> = {
-          type: "div",
-          props: {
-            className: "Alelí",
-            children: [],
-          },
-        };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Alelí"></div></div>`
-    );
-    let updatedVnode: VNode<{ className: "Alelí" }> = {
-      type: "span",
       props: {
         className: "Alelí",
         children: [],
       },
     };
     aleliRenderer.render(updatedVnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><span class="Alelí"></span></div>`
-    );
+    expect(spySetProperty).toBeCalledTimes(1);
   });
 
-  it("render should change parent dom node if change ", () => {
-    let vnode: VNode<{ className: "Alelí" }> = {
-          type: "div",
-          props: {
-            className: "Alelí",
-            children: [],
-          },
-        };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div class="Alelí"></div></div>`
+  it("render shouldn't call create element if not necessary, using key attribute ", () => {
+    // @ts-ignore
+    const spyCreateElement = jest.spyOn(
+      AleliRenderer.prototype,
+      "createElement"
     );
-    let updatedVnode: VNode<{ className: "Alelí" }> = {
-      type: "span",
-      props: {
-        className: "Alelí",
-        children: [],
-      },
-    };
-    aleliRenderer.render(updatedVnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><span class="Alelí"></span></div>`
-    );
-  });
 
-  it("render should remove event listener div if needed", () => {
-    let child : HTMLElement;
-    const mocked : Function = () => {}
-    const customProp = {
-      onClick: mocked,
-      children: [
-        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-      ],
-    };
-    const vnode: VNode<typeof customProp> = {
+    const vnode: VNode<{ className: "Alelí" }> = {
       type: "div",
       props: {
-        onClick:  mocked,
+        className: "Alelí",
         children: [
-          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+          {
+            type: "div",
+            props: {
+              className: "First",
+              key: 1,
+              children: [],
+            },
+          },
+          {
+            type: "span",
+            props: {
+              className: "Second",
+              key: 2,
+              children: [],
+            },
+          },
+          {
+            type: "button",
+            props: {
+              className: "third",
+              key: 3,
+              children: [],
+            },
+          },
         ],
       },
     };
     const root: HTMLElement = document.createElement("div");
     aleliRenderer.render(vnode, root);
-    child = root.firstChild! as HTMLElement;
-    expect(child).toHaveProperty('onclick')
-    const updatedCustomProp = {
-      children: [
-        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-      ],
-    };
-    const updatedVnode: VNode<typeof updatedCustomProp> = {
+    const updatedVnode: VNode<{ className: "Alelí" }> = {
       type: "div",
       props: {
+        className: "Alelí",
         children: [
-          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+          {
+            type: "span",
+            props: {
+              className: "Second",
+              key: 2,
+              children: [],
+            },
+          },
+          {
+            type: "div",
+            props: {
+              className: "First",
+              key: 1,
+              children: [],
+            },
+          },
+          {
+            type: "button",
+            props: {
+              className: "third",
+              key: 3,
+              children: [],
+            },
+          },
         ],
       },
     };
     aleliRenderer.render(updatedVnode, root);
-    expect(child.onclick).toBe(null)
+    expect(spyCreateElement).toBeCalledTimes(4);
+  });
+});
+
+describe('AleliRenderer method removeProperty', () => {
+  let aleliRenderer: AleliRenderer;
+
+  beforeAll(() => {
+    aleliRenderer = new AleliRenderer();
   });
 
+  it('AleliRenderer method removeProperty should remove attribute from HTMLElement', () => {
+    const htmlElement = document.createElement("div");
+    htmlElement.setAttribute("id","test")
+    aleliRenderer.removeProperty(htmlElement,"id")
+    expect(htmlElement.attributes).not.toHaveProperty("id")
+  });
 
-  it("render should throw error if root element is Comment node", () => {
-    const customProp = {
-      children: [
-        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-      ],
-    };
-    const vnode: VNode<typeof customProp> = {
+  it('AleliRenderer method removeProperty should not throw error if prop is not inside HTMLElement', () => {
+    const htmlElement = document.createElement("div");
+    expect(() => aleliRenderer.removeProperty(htmlElement,"id")).not.toThrowError()
+  });
+
+  it('AleliRenderer method removeProperty should remove class instead of className', () => {
+    const htmlElement = document.createElement("div");
+    htmlElement.classList.add("testClass")
+    aleliRenderer.removeProperty(htmlElement,'className')
+    expect(htmlElement.attributes).not.toHaveProperty('class')
+  });
+
+  it('AleliRenderer method removeProperty should remove event listener', () => {
+    const htmlElement = document.createElement("div");
+    htmlElement.onclick = () => {}
+    expect(htmlElement).toHaveProperty('onclick')
+    aleliRenderer.removeProperty(htmlElement,'onClick')
+    expect(htmlElement).toHaveProperty('onclick')
+    expect(typeof htmlElement.onclick!).toBe("object")
+  });
+
+})
+
+describe('AleliRenderer method createElement', () => {
+  let aleliRenderer: AleliRenderer;
+
+  beforeAll(() => {
+    aleliRenderer = new AleliRenderer();
+  })
+
+  it('AleliRenderer method createElement should return DOM HTMLElement if type is not $TEXT', () => {
+    let vnode: VNode = {
       type: "div",
       props: {
+        children: [],
+      },
+    };
+    const htmlElement : HTMLElement = aleliRenderer.createElement(vnode) as HTMLElement
+    expect(htmlElement.localName).toBe("div")
+  });
+
+  it('AleliRenderer method createElement should return Text Node if type is $TEXT', () => {
+    let vnode: VNode = {
+      type: "$TEXT",
+      props: {
+        textValue: "Alelí",
+        children: [],
+      },
+    };
+    const textNode : Text = document.createTextNode("Alelí")
+    expect(aleliRenderer.createElement(vnode)).toStrictEqual(textNode)
+  });
+
+});
+
+describe("AleliRenderer method removeOldChild", () => {
+  let aleliRenderer: AleliRenderer;
+
+  beforeAll(() => {
+    aleliRenderer = new AleliRenderer();
+  });
+
+  it("AleliRenderer method removeOldChild should remove Dom node", () => {
+    const parent: HTMLElement = document.createElement("div");
+    const child: HTMLElement = document.createElement("div");
+    parent.appendChild(child);
+    expect(parent.firstChild).toBe(child);
+    let vnode: VNode = {
+      type: parent.localName,
+      props: {
+        children: [],
+      },
+      dom: child,
+    };
+    aleliRenderer.removeOldChild(vnode);
+    expect(parent.firstChild).toBe(null);
+  });
+
+  it("AleliRenderer method removeOldChild should not do anything if oldNode does not have dom prop", () => {
+    const parent: HTMLElement = document.createElement("div");
+    const child: HTMLElement = document.createElement("div");
+    parent.appendChild(child);
+    expect(parent.firstChild).toBe(child);
+    let vnode: VNode = {
+      type: parent.localName,
+      props: {
         children: [
-          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+          {
+            type: child.localName,
+            props: {
+              children: [],
+            },
+          },
         ],
       },
     };
-    const root: Comment = document.createComment("Alelí Comment")
-    expect(() => aleliRenderer.render(vnode, root as unknown as HTMLElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
+    aleliRenderer.removeOldChild(vnode);
+    expect(parent.firstChild).toBe(child);
+  });
+});
+
+describe("AleliRenderer method findOldChildrenIfExists", () => {
+  let aleliRenderer: AleliRenderer;
+
+  beforeAll(() => {
+    aleliRenderer = new AleliRenderer();
   });
 
-  it("render should throw error if root element is Text node", () => {
-    const customProp = {
-      children: [
-        { type: "$TEXT", props: { textValue: "Hello", children: [] } },
-      ],
+  it("AleliRenderer method removeOldChildren should remove Dom node", () => {
+    const parent: HTMLElement = document.createElement("div");
+    const child: HTMLElement = document.createElement("div");
+    parent.appendChild(child);
+    expect(parent.firstChild).toBe(child);
+    let vnode: VNode = {
+      type: parent.localName,
+      props: {
+        children: [],
+      },
+      dom: child,
     };
-    const vnode: VNode<typeof customProp> = {
-      type: "div",
+    aleliRenderer.removeOldChild(vnode);
+    expect(parent.firstChild).toBe(null);
+  });
+
+  it("AleliRenderer method removeOldChildren should not do anything if oldNode does not have dom prop", () => {
+    const parent: HTMLElement = document.createElement("div");
+    const child: HTMLElement = document.createElement("div");
+    parent.appendChild(child);
+    expect(parent.firstChild).toBe(child);
+    let vnode: VNode = {
+      type: parent.localName,
       props: {
         children: [
-          { type: "$TEXT", props: { textValue: "Hello", children: [] } },
+          {
+            type: child.localName,
+            props: {
+              children: [],
+            },
+          },
         ],
       },
     };
-    const root: Comment = document.createTextNode("Alelí Comment")
-    expect(() => aleliRenderer.render(vnode, root as unknown as HTMLElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
+    aleliRenderer.removeOldChild(vnode);
+    expect(parent.firstChild).toBe(child);
   });
-
-  it("render should not set key attribute", () => {
-    let vnode: VNode<{ key: 1 }> = {
-      type: "div",
-      props: { key: 1, children: [] },
-    };
-    let root: HTMLElement = document.createElement("div");
-    aleliRenderer.render(vnode, root);
-    expect(serializer.serializeNode(root)).toEqual(
-      `<div><div></div></div>`
-    );
-  });
-
- 
 });
