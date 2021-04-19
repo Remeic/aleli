@@ -107,5 +107,19 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
     aleliRenderer.render(vnode, root);
     expect(v).toBeCalled()
   });
+
+  it("state after mount have to be changed | on TestComponent", () => {
+    const root: HTMLElement = document.createElement("div");
+    let vnode: VNode = {
+      type: plainComponent,
+      props: {
+        children: []
+      }
+    }
+    expect(plainComponent.getValueFromState('newVal')).toBe(undefined)
+    aleliRenderer.render(vnode, root);
+    expect(plainComponent.getValueFromState('newVal')).toBe(1)
+
+  });
 });
 
