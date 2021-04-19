@@ -23,6 +23,7 @@ export default class AleliRenderer implements Renderer {
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
     if (typeof newNode.type !== "string") {
+      console.log("Have to mount",!newNode.type.isMounted())
       if (!newNode.type.isMounted()) {
         newNode.type.mounting();
         newNode.type.mount();
@@ -43,7 +44,7 @@ export default class AleliRenderer implements Renderer {
         this.diff(child, newNode.dom!, oldestChild);
       });
 
-      this.removeOldChildren(oldNode);
+      //this.removeOldChildren(oldNode);
 
       if (isNotTextNode(newNode)) {
         this.diffProps(oldNode!, newNode, newNode.dom as CustomHTMLElement);
@@ -139,7 +140,7 @@ export default class AleliRenderer implements Renderer {
 
   private removeOldChildren(oldNode: VNode<{}>): void {
     this.getOldChildren(oldNode).map((oldChild) => {
-      oldChild.dom!.remove();
+      this.removeOldChild(oldChild)
     });
   }
 
@@ -158,7 +159,9 @@ export default class AleliRenderer implements Renderer {
   ): VNode {
     return (
       (this.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
-        let result = undefined;
+        let result = undefined
+        let oldChildNotFinded : VNode = oldChild
+        
         if (child.props.key && oldChild.props.key) {
           if (
             child.props.key === oldChild.props.key &&
@@ -170,7 +173,15 @@ export default class AleliRenderer implements Renderer {
           if (child.type === oldChild.type && index === oldChildindex)
             result = oldChild;
         }
+        if(result === undefined){
+          if(typeof oldChildNotFinded.type !== 'string'){
+            oldChildNotFinded.type.destroying()
+            oldChildNotFinded.type.destroy()
+          }
+          this.removeOldChildren(oldNode);
+        }
         return result;
+
       }) as VNode) || { type: "", props: { children: [] } }
     );
   }

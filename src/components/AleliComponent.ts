@@ -1,16 +1,25 @@
 import Component from "@src/types/component";
 import { VNode } from "@src/types/vnode";
+import ClassState from "./ClassState";
 
-interface ClassState {
-  [key: string]: any;
-}
 
 export default abstract class AleliComponent implements Component {
   protected readonly state: ClassState;
   private mounted: boolean = false;
+  private destroyed: boolean = false;
 
   constructor() {
     this.state = {};
+  }
+  
+  abstract destroying(): void 
+
+  destroy(): void {
+   this.destroyed = true
+  }
+
+  isDestroyed(): boolean {
+    return this.destroyed
   }
 
   isMounted(): boolean {
