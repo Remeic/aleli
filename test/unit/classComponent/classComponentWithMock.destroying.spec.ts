@@ -75,4 +75,46 @@ describe("AleliComponent's destroying method is call when a component is unmount
     verify(spiedComponent.destroying()).once()
     expect(plainComponent.getValueFromState("newVal")).toBe(0);
   });
+
+  it("destroying method should not be called if component is not removed between re-renders ", () => {
+    const root: HTMLElement = document.createElement("div");
+    const props: VNode["props"] = {
+      children: [],
+    };
+    when(mockedComponent.render(deepEqual(props))).thenReturn({
+      type: "span",
+      props: {
+        children: [],
+      },
+    });
+    let vnode: VNode = {
+      type: "div",
+      props: {
+        children: [
+          {
+            type: plainComponent,
+            props: {
+              children: [],
+            },
+          },
+        ],
+      },
+    };
+    aleliRenderer.render(vnode, root);
+    let vnodeUpdated: VNode = {
+      type: "div",
+      props: {
+        children: [
+          {
+            type: plainComponent,
+            props: {
+              children: [],
+            },
+          },
+        ],
+      },
+    };
+    aleliRenderer.render(vnodeUpdated, root);
+    verify(spiedComponent.destroying()).never()
+  });
 });
