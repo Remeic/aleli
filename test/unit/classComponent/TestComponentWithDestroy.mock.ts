@@ -3,7 +3,7 @@ import { Children, VNode } from "@src/types/vnode";
 
 export default  class TestComponent extends AleliComponent {
   destroying(): void {
-    throw new Error("Method not implemented.");
+    this.setState({ newVal: 0 });
   }
   constructor() {
     super();

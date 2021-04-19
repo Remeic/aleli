@@ -5,6 +5,9 @@ import AleliComponent from "@src/components/AleliComponent"
 describe('Class Component tests', () => {
   it('AleliComponent should have intitial state empty', () => {
     class TestComponent extends AleliComponent{
+      destroying(): void {
+        throw new Error("Method not implemented.");
+      }
       mounting(): void {
         throw new Error("Method not implemented.");
       }
@@ -28,6 +31,9 @@ describe('Class Component tests', () => {
 
   it('AleliComponent should have state not empty after setState', () => {
     class TestComponent extends AleliComponent{
+      destroying(): void {
+        throw new Error("Method not implemented.");
+      }
       mounting(): void {
         throw new Error("Method not implemented.");
       }
@@ -52,6 +58,9 @@ describe('Class Component tests', () => {
 
   it('AleliComponent should read value of key using getValueFromKey', () => {
     class TestComponent extends AleliComponent{
+      destroying(): void {
+        throw new Error("Method not implemented.");
+      }
       mounting(): void {
         throw new Error("Method not implemented.");
       }
@@ -76,6 +85,9 @@ describe('Class Component tests', () => {
 
   it('AleliComponent getValueFromKey method should return undefined if store doesn\'t contain specified key', () => {
     class TestComponent extends AleliComponent{
+      destroying(): void {
+        throw new Error("Method not implemented.");
+      }
       mounting(): void {
         throw new Error("Method not implemented.");
       }
