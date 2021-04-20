@@ -23,7 +23,6 @@ export default class AleliRenderer implements Renderer {
 
   private diff(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) {
     if (typeof newNode.type !== "string") {
-      console.log("Have to mount",!newNode.type.isMounted())
       if (!newNode.type.isMounted()) {
         newNode.type.mounting();
         newNode.type.mount();
@@ -44,7 +43,6 @@ export default class AleliRenderer implements Renderer {
         this.diff(child, newNode.dom!, oldestChild);
       });
 
-      //this.removeOldChildren(oldNode);
 
       if (isNotTextNode(newNode)) {
         this.diffProps(oldNode!, newNode, newNode.dom as CustomHTMLElement);
@@ -157,11 +155,12 @@ export default class AleliRenderer implements Renderer {
     child: VNode<{}>,
     index: number
   ): VNode {
+    const emtpyVNode : VNode = { type: "", props: { children: [] } }
     return (
       (this.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
         let result = undefined
         let oldChildNotFinded : VNode = oldChild
-        
+       
         if (child.props.key && oldChild.props.key) {
           if (
             child.props.key === oldChild.props.key &&
@@ -169,7 +168,11 @@ export default class AleliRenderer implements Renderer {
           ) {
             result = oldChild;
           }
-        } else {
+        } 
+        else if (child.props.key || oldChild.props.key){
+          result = undefined
+        }
+        else {
           if (child.type === oldChild.type && index === oldChildindex)
             result = oldChild;
         }
@@ -182,7 +185,7 @@ export default class AleliRenderer implements Renderer {
         }
         return result;
 
-      }) as VNode) || { type: "", props: { children: [] } }
+      }) as VNode) || emtpyVNode
     );
   }
 }
