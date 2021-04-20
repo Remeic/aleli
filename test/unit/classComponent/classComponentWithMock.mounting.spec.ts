@@ -3,7 +3,7 @@ import AleliComponent from "../../../src/components/AleliComponent";
 import AleliRenderer from "@src/render";
 import { Renderer } from "@src/types/renderer";
 import TestComponent from "./TestComponent.mock"
-import { mock, verify, instance,spy, when, deepEqual, reset } from "ts-mockito";
+import { mock, verify, instance,spy, when, deepEqual, reset  } from "ts-mockito";
 
 describe("AleliComponent's mounting method is call after DOM has be mounted", () => {
   let aleliRenderer: Renderer;
@@ -75,6 +75,9 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
         children: []
       }
     }
+    when(spiedComponent.mounting()).thenCall(()=>{
+      return;
+    })
     expect(plainComponent.isMounted()).toBe(false)
     aleliRenderer.render(vnode, root);
     expect(plainComponent.isMounted()).toBe(true)
@@ -88,7 +91,9 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
         children: []
       }
     }
-    
+    when(spiedComponent.mounting()).thenCall(()=>{
+      return;
+    })
     aleliRenderer.render(vnode, root);
     aleliRenderer.render(vnode, root);
     verify(spiedComponent.mounting()).once()
@@ -96,8 +101,8 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
 
   it("function insde mounting method should be called", () => {
     const root: HTMLElement = document.createElement("div");
-    let v = jest.fn();
-    when(spiedComponent.mounting()).thenCall(v)
+    let stubbedFunction = jest.fn();
+    when(spiedComponent.mounting()).thenCall(stubbedFunction)
     let vnode: VNode = {
       type: plainComponent,
       props: {
@@ -105,7 +110,7 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
       }
     }
     aleliRenderer.render(vnode, root);
-    expect(v).toBeCalled()
+    expect(stubbedFunction).toBeCalled()
   });
 
   it("state after mount have to be changed | on TestComponent", () => {
@@ -116,6 +121,9 @@ describe("AleliComponent's mounting method is call after DOM has be mounted", ()
         children: []
       }
     }
+    when(spiedComponent.mounting()).thenCall(()=>{
+      plainComponent.setState({newVal:1})
+    })
     expect(plainComponent.getValueFromState('newVal')).toBe(undefined)
     aleliRenderer.render(vnode, root);
     expect(plainComponent.getValueFromState('newVal')).toBe(1)

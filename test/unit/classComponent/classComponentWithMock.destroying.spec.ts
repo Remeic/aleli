@@ -2,7 +2,7 @@ import { Children, VNode } from "@src/types/vnode";
 import AleliComponent from "../../../src/components/AleliComponent";
 import AleliRenderer from "@src/render";
 import { Renderer } from "@src/types/renderer";
-import TestComponent from "./TestComponentWithDestroy.mock";
+import TestComponent from "./TestComponent.mock";
 import {
   mock,
   verify,
@@ -30,6 +30,9 @@ describe("AleliComponent's destroying method is call when a component is unmount
     reset(mockedComponent);
     plainComponent = new TestComponent();
     spiedComponent = spy(plainComponent);
+    when(spiedComponent.mounting()).thenCall(()=>{
+      return;
+    })
   });
 
   it("destroying method should be called if component is not reusable between re-renders and method is specified", () => {
@@ -37,12 +40,16 @@ describe("AleliComponent's destroying method is call when a component is unmount
     const props: VNode["props"] = {
       children: [],
     };
-    when(mockedComponent.render(deepEqual(props))).thenReturn({
+    when(spiedComponent.render(deepEqual(props))).thenReturn({
       type: "span",
       props: {
         children: [],
       },
     });
+    
+    when(spiedComponent.destroying()).thenCall(()=>{
+      plainComponent.setState({newVal:0})
+    })
     
     let vnode: VNode = {
       type: "div",
@@ -73,6 +80,7 @@ describe("AleliComponent's destroying method is call when a component is unmount
     };
     aleliRenderer.render(vnodeUpdated, root);
     verify(spiedComponent.destroying()).once()
+    expect(plainComponent.isDestroyed()).toBe(true)
     expect(plainComponent.getValueFromState("newVal")).toBe(0);
   });
 
@@ -116,5 +124,6 @@ describe("AleliComponent's destroying method is call when a component is unmount
     };
     aleliRenderer.render(vnodeUpdated, root);
     verify(spiedComponent.destroying()).never()
+    expect(plainComponent.isDestroyed()).toBe(false)
   });
 });

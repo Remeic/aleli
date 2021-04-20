@@ -19,6 +19,6 @@ export default  class TestComponent extends AleliComponent {
     return vnode
   }
   mounting() {
-    this.setState({ newVal: 1 });
+    throw new Error("Method not implemented.");
   }
 }
