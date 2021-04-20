@@ -42,7 +42,7 @@ export default abstract class AleliComponent implements Component {
     Object.assign(this.state, newState);
   }
 
-  public getValueFromState(key: string) {
+  public getValueFromState(key: string) : any {
     return key in this.getState() ? this.getState()[key] : undefined;
   }
 }

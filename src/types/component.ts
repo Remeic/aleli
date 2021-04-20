@@ -11,4 +11,6 @@ export default interface Component {
   isDestroyed(): boolean
   destroy() : void
   getState(): ClassState
+  getValueFromState(key: string) : any
+  setState(newState: ClassState): void
 }
