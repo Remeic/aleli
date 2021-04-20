@@ -1,5 +1,7 @@
+import Component from "./component";
+
 export interface VNode<T = {}> {
-  type: string;
+  type: string | Component;
   props: T & { children: Children, [other: string]: any }
 	dom?: HTMLElement | Text 
 }
