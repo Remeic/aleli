@@ -4,7 +4,7 @@ matrix:
   include:
     - node_js: 12
       if: type IN (push) AND type NOT IN (pull_request)
-      env: JOB="testPR"    # only on PR
+      env: JOB="test"    # only on PR
     - node_js: 12
       if: type IN (pull_request)
       env: JOB="testPR"
