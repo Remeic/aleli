@@ -1,8 +1,7 @@
 import { VNode } from "@src/types/vnode";
 import AleliRenderer from "@src/render";
-import { Renderer } from "@src/types/renderer";
+import { RendererBase } from "@src/types/renderer";
 import {
-  DomTreeSerializer,
   DomTreeStringify,
 } from "@src/utils/DomTreeSerializer";
 import AleliComponent from "@src/components" 
@@ -12,14 +11,12 @@ import { mock, verify, instance,spy, when, deepEqual, reset } from "ts-mockito";
 
 
 describe('Testing render function of Class Components with state, it render VNodes', () => {
-  let serializer: DomTreeSerializer;
-  let aleliRenderer: Renderer;
+  let aleliRenderer: RendererBase;
   let Component: AleliComponent
   let mockedComponent: AleliComponent
   let mockedInstanceComponent: AleliComponent 
 
   beforeAll(() => {
-    serializer = new DomTreeStringify();
     aleliRenderer = new AleliRenderer();
     Component = new TestComponent()
     mockedComponent = mock(TestComponent)

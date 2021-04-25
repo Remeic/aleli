@@ -1,12 +1,11 @@
 import { Children, VNode } from "@src/types/vnode";
 import AleliComponent from "../../../src/components/AleliComponent";
 import AleliRenderer from "@src/render";
-import { Renderer } from "@src/types/renderer";
+import { RendererBase } from "@src/types/renderer";
 import TestComponent from "./TestComponent.mock";
 import {
   mock,
   verify,
-  instance,
   spy,
   when,
   deepEqual,
@@ -14,16 +13,14 @@ import {
 } from "ts-mockito";
 
 describe("AleliComponent's destroying method is call when a component is unmounted", () => {
-  let aleliRenderer: Renderer;
+  let aleliRenderer: RendererBase;
   let mockedComponent: AleliComponent;
-  let mockedInstanceComponent: AleliComponent;
   let plainComponent: AleliComponent;
   let spiedComponent: AleliComponent;
 
   beforeAll(() => {
     aleliRenderer = new AleliRenderer();
     mockedComponent = mock(TestComponent);
-    mockedInstanceComponent = instance(mockedComponent);
   });
 
   beforeEach(() => {

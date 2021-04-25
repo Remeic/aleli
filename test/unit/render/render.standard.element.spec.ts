@@ -4,11 +4,11 @@ import {
   DomTreeSerializer,
   DomTreeStringify,
 } from "@src/utils/DomTreeSerializer";
-import { Renderer } from "@src/types/renderer";
+import { RendererBase } from "@src/types/renderer";
 
 describe("Testing render function, it render VNodes", () => {
   let serializer: DomTreeSerializer;
-  let aleliRenderer: Renderer;
+  let aleliRenderer: RendererBase;
 
   beforeAll(() => {
     serializer = new DomTreeStringify();

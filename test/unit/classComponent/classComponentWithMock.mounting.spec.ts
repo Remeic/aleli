@@ -1,12 +1,12 @@
 import { Children, VNode } from "@src/types/vnode";
 import AleliComponent from "../../../src/components/AleliComponent";
 import AleliRenderer from "@src/render";
-import { Renderer } from "@src/types/renderer";
+import { RendererBase } from "@src/types/renderer";
 import TestComponent from "./TestComponent.mock"
 import { mock, verify, instance,spy, when, deepEqual, reset  } from "ts-mockito";
 
 describe("AleliComponent's mounting method is call after DOM has be mounted", () => {
-  let aleliRenderer: Renderer;
+  let aleliRenderer: RendererBase;
   let mockedComponent: AleliComponent
   let mockedInstanceComponent: AleliComponent 
   let plainComponent : AleliComponent
