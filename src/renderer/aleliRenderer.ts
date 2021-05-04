@@ -7,7 +7,7 @@ import RendererUtilities from "@src/types/rendererUtilities";
 export default class AleliRenderer implements RendererBase {
   private aleliDiffer: Differ;
   private rendererUtilities:  RendererUtilities;
-
+  private emptyVNode : VNode = { type: "", props: { children: [] } }
   constructor(aleliDiffer?: Differ, rendererUtilities?: RendererUtilities){
     if(aleliDiffer && rendererUtilities){
       this.aleliDiffer = aleliDiffer
@@ -24,9 +24,11 @@ export default class AleliRenderer implements RendererBase {
       Array<number>(Node.TEXT_NODE, Node.COMMENT_NODE).indexOf(root.nodeType) ==
       -1
     ) {
-      if (!root._vnode || node.type !== root._vnode.type) {
-        root._vnode && root._vnode.dom && root._vnode.dom.remove();
-        root._vnode = { type: "", props: { children: [] } };
+      if(root._vnode && node.type !== root._vnode.type){
+        this.removeRootDom(root)
+      }
+      if (!root._vnode) {
+        root._vnode = this.emptyVNode;
       }
       this.aleliDiffer.diffNodes(node, root, root._vnode);
     } else {
@@ -35,4 +37,9 @@ export default class AleliRenderer implements RendererBase {
       );
     }
   }  
+
+
+  private removeRootDom(root: CustomHTMLElement) {
+    root._vnode && root._vnode.dom && root._vnode.dom.remove();
+  }
 }
