@@ -1,7 +1,5 @@
-import { VNode, Children } from "@src/types/vNode";
-import { Renderer, CustomHTMLElement, RendererBase } from "@src/types/renderer";
-import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
-import AleliComponent from "@src/components";
+import { VNode } from "@src/types/vNode";
+import { CustomHTMLElement, RendererBase } from "@src/types/renderer";
 import { Differ } from "@src/differ/differ";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import RendererUtilities from "@src/types/rendererUtilities";

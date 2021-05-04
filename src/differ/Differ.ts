@@ -1,5 +1,5 @@
 import { CustomHTMLElement } from "@src/types/renderer";
-import { VNode } from "@src/types/vnode";
+import { VNode } from "@src/types/vNode";
 
 export interface Differ{
   diffNodes(newNode: VNode, dom: CustomHTMLElement | Text, oldNode: VNode) : void

@@ -1,4 +1,4 @@
-import { VNode } from "@src/types/vnode";
+import { VNode } from "@src/types/vNode";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import RendererUtilities from "@src/types/rendererUtilities";
 

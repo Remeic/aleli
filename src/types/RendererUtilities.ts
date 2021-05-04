@@ -1,5 +1,5 @@
 import { CustomHTMLElement } from "./renderer";
-import { Children, VNode } from "./vnode";
+import { Children, VNode } from "./vNode";
 
 export default class RendererUtilities {
  
