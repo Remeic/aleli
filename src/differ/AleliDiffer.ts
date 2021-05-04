@@ -57,6 +57,7 @@ export default class AleliDiffer implements Differ{
           if (
             child.props.key === oldChild.props.key &&
             child.type === oldChild.type
+            && index === oldChildindex
           ) {
             result = oldChild;
           }
