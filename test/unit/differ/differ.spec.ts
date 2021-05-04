@@ -380,6 +380,7 @@ describe("aleliDiffer method diffProps", () => {
   let rendererUtilities : RendererUtilities;
   let aleliDiffer : AleliDiffer
   let mockedRendererUtilities : RendererUtilities
+
   beforeAll(() => {
     mockedRendererUtilities = mock(RendererUtilities)
     rendererUtilities = instance(mockedRendererUtilities)
@@ -429,18 +430,71 @@ describe("aleliDiffer method diffProps", () => {
     verify(mockedRendererUtilities.setProperty(htmlElement,"id",newProp)).once()
   });
 
-  // it('differProp should add new prop to html element', () => {
-  //   const oldProp: VNode["props"] = {
-  //     children: []
-  //   }
-  //   const newProp: VNode["props"] = {
-  //     id:1,
-  //     children: []
-  //   }
-  //   const element : HTMLElement = document.createElement("div")
-  //   aleliDiffer.diffProps(oldProp,newProp, element)
+  it('differProps should\'nt call setProperty if specific key-value of prop not change between renders', () => {
+    const oldProp: VNode["props"] = {
+      id:1,
+      children: []
+    }
+    const newProp: VNode["props"] = {
+      id: 1,
+      children: []
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newProp)).never()
+  });
 
-  // });
+  it('differProp should\'nt call remove for children prop', () => {
+    const oldProp: VNode["props"] = {
+      children: []
+    }
+    const newProp: VNode["props"] = {
+      children: []
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    verify(mockedRendererUtilities.removeProperty(htmlElement,"children")).never()
+  });
+
+  it('differProp should\'nt call removeProperty for key prop', () => {
+    const oldProp: VNode["props"] = {
+      key: 1,
+      children: []
+    }
+    const newProp: VNode["props"] = {
+      children: []
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    verify(mockedRendererUtilities.removeProperty(htmlElement,"key")).never()
+  });
+
+  it('differProps should call removeProperty for valid prop', () => {
+    const oldProp: VNode["props"] = {
+      id: 1,
+      children: []
+    }
+    const newProp: VNode["props"] = {
+      children: []
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    verify(mockedRendererUtilities.removeProperty(htmlElement,"id")).once()
+  });
+
+  it('differProps should\'nt call removeProperty if specific key-value of prop not change between renders', () => {
+    const oldProp: VNode["props"] = {
+      id:1,
+      children: []
+    }
+    const newProp: VNode["props"] = {
+      id: 1,
+      children: []
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    verify(mockedRendererUtilities.removeProperty(htmlElement,"id")).never()
+  });
 
   
 });
