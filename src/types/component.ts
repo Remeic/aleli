@@ -1,5 +1,5 @@
-import ClassState from "@src/components/ClassState";
-import { Children, VNode } from "./vnode";
+import ClassState from "@src/components/classState";
+import { Children, VNode } from "./vNode";
 
 
 export default interface Component {

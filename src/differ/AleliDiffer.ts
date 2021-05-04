@@ -1,8 +1,8 @@
 import { CustomHTMLElement } from "@src/types/renderer";
 import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
-import { Differ } from "./Differ";
-import RendererUtilities from "@src/types/RendererUtilities"
-import { Children, VNode } from "@src/types/vnode";
+import { Differ } from "./differ";
+import RendererUtilities from "@src/types/rendererUtilities"
+import { Children, VNode } from "@src/types/vNode";
 
 export default class AleliDiffer implements Differ{
   private renderUtilities : RendererUtilities;

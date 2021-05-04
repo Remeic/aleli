@@ -1,7 +1,7 @@
 import AleliComponent from "@src/components";
 import createElement from "@src/createElement";
 import Component from "@src/types/component";
-import {VNode} from "@src/types/vnode";
+import {VNode} from "@src/types/vNode";
 
 describe("Testing createElement function, it return a vnode", () => {
   test("createElement return VNode with type and other property empty", () => {

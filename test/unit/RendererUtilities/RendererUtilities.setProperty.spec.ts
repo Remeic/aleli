@@ -1,6 +1,6 @@
 import { VNode } from "@src/types/vnode";
-import AleliDiffer from "@src/differ/AleliDiffer";
-import RendererUtilities from "@src/types/RendererUtilities";
+import AleliDiffer from "@src/differ/aleliDiffer";
+import RendererUtilities from "@src/types/rendererUtilities";
 
 describe("RendererUtilities method setProperty", () => {
   let aleliDiffer: AleliDiffer;

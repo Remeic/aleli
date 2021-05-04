@@ -1,5 +1,5 @@
-import { Children, VNode } from "@src/types/vnode";
-import AleliComponent from "@src/components/AleliComponent" 
+import { Children, VNode } from "@src/types/vNode";
+import AleliComponent from "@src/components/aleliComponent" 
 
 
 describe('Class Component tests', () => {

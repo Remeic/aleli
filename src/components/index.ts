@@ -1,2 +1,2 @@
-import AleliComponent from "./AleliComponent"
+import AleliComponent from "./aleliComponent"
 export default AleliComponent

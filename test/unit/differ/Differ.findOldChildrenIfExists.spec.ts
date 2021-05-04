@@ -1,6 +1,6 @@
-import AleliDiffer from "@src/differ/AleliDiffer";
-import RendererUtilities from "@src/types/RendererUtilities";
-import { VNode } from "@src/types/vnode";
+import AleliDiffer from "@src/differ/aleliDiffer";
+import RendererUtilities from "@src/types/rendererUtilities";
+import { VNode } from "@src/types/vNode";
 import {
   mock,
   verify,

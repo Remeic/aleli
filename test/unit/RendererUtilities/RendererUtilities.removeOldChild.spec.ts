@@ -1,5 +1,5 @@
-import RendererUtilities from "@src/types/RendererUtilities";
-import { VNode } from "@src/types/vnode";
+import RendererUtilities from "@src/types/rendererUtilities";
+import { VNode } from "@src/types/vNode";
 
 describe("aleliDiffer method removeOldChild", () => {
   let rendererUtilities : RendererUtilities;

@@ -1,6 +1,6 @@
 import Component from "@src/types/component";
-import { VNode } from "@src/types/vnode";
-import ClassState from "./ClassState";
+import { VNode } from "@src/types/vNode";
+import ClassState from "./classState";
 
 
 export default abstract class AleliComponent implements Component {

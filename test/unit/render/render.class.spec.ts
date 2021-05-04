@@ -1,10 +1,10 @@
-import { VNode } from "@src/types/vnode";
+import { VNode } from "@src/types/vNode";
 import AleliRenderer from "@src/render";
 import {  RendererBase } from "@src/types/renderer";
 import {
   DomTreeSerializer,
   DomTreeStringify,
-} from "@src/utils/DomTreeSerializer";
+} from "@src/utils/domTreeSerializer";
 import AleliComponent from "@src/components" 
 import TestComponent from "../classComponent/TestComponent.mock"
 import { mock, verify, instance,spy, when, deepEqual, reset } from "ts-mockito";

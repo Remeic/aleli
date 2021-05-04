@@ -1,4 +1,4 @@
-import RendererUtilities from "@src/types/RendererUtilities";
+import RendererUtilities from "@src/types/rendererUtilities";
 
 describe("aleliDiffer method removeProperty", () => {
   let rendererUtilities : RendererUtilities;

@@ -1,4 +1,4 @@
-import RendererUtilities from "@src/types/RendererUtilities";
+import RendererUtilities from "@src/types/rendererUtilities";
 import { VNode } from "@src/types/vnode";
 
 describe("aleliDiffer method createElement", () => {

@@ -1,4 +1,4 @@
-import {Children, VNode } from "@src/types/vnode";
+import {Children, VNode } from "@src/types/vNode";
 
 
 export  function isVNode(node: Children) {

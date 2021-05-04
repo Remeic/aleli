@@ -1,10 +1,10 @@
-import { VNode, Children } from "@src/types/vnode";
+import { VNode, Children } from "@src/types/vNode";
 import { Renderer, CustomHTMLElement, RendererBase } from "@src/types/renderer";
 import { isVNode, isNotTextNode } from "@src/utils/detectNodeUtils";
 import AleliComponent from "@src/components";
-import { Differ } from "@src/differ/Differ";
-import AleliDiffer from "@src/differ/AleliDiffer";
-import RendererUtilities from "@src/types/RendererUtilities";
+import { Differ } from "@src/differ/differ";
+import AleliDiffer from "@src/differ/aleliDiffer";
+import RendererUtilities from "@src/types/rendererUtilities";
 
 export default class AleliRenderer implements RendererBase {
   private aleliDiffer: Differ;

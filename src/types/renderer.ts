@@ -1,4 +1,4 @@
-import { VNode, Children } from "./vnode";
+import { VNode, Children } from "./vNode";
 
 export interface RendererBase{
 	render(elementToRender: VNode, root: Element): void;

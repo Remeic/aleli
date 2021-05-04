@@ -1,4 +1,4 @@
-import { VNode, Children } from "../types/vnode";
+import { VNode, Children } from "../types/vNode";
 import {isVNode} from "../utils/detectNodeUtils"
 
 function createElement<T = {}>(
