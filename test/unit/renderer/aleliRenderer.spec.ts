@@ -1,6 +1,6 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/differ/differ";
-import AleliRenderer from "@src/render";
+import AleliRenderer from "@src/renderer";
 import { RendererBase } from "@src/types/renderer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import { VNode } from "@src/types/vNode";

@@ -1,5 +1,5 @@
 import { VNode } from "@src/types/vNode";
-import AleliRenderer from "@src/render";
+import AleliRenderer from "@src/renderer";
 import { RendererBase } from "@src/types/renderer";
 import {
   DomTreeStringify,

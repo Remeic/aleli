@@ -1,6 +1,6 @@
 import { Children, VNode } from "@src/types/vNode";
 import AleliComponent from "../../../src/components/aleliComponent";
-import AleliRenderer from "@src/render";
+import AleliRenderer from "@src/renderer";
 import { RendererBase } from "@src/types/renderer";
 import TestComponent from "./TestComponent.mock"
 import { mock, verify, instance,spy, when, deepEqual, reset  } from "ts-mockito";

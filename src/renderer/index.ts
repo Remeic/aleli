@@ -1,2 +1,2 @@
-import AleliRenderer from "./render"
+import AleliRenderer from "./aleliRenderer"
 export default AleliRenderer;

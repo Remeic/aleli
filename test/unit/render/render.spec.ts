@@ -2,7 +2,7 @@ import { VNode } from "@src/types/vNode";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import { RendererBase } from "@src/types/renderer";
-import  AleliRenderer  from "@src/render/index";
+import  AleliRenderer  from "@src/renderer/index";
 
 
 describe("RendererUtilities method should call setProperty only when needed", () => {
