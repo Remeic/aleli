@@ -14,18 +14,22 @@ export default abstract class AleliComponent implements Component {
   
   abstract destroying(): void 
 
+  /* istanbul ignore next */
   destroy(): void {
    this.destroyed = true
   }
 
+  /* istanbul ignore next */
   isDestroyed(): boolean {
     return this.destroyed
   }
 
+  /* istanbul ignore next */
   isMounted(): boolean {
     return this.mounted
   }
 
+  /* istanbul ignore next */
   mount() : void {
     this.mounted = true
   }
@@ -34,10 +38,12 @@ export default abstract class AleliComponent implements Component {
 
   abstract render(props: VNode["props"]): VNode<{}>;
   
+  /* istanbul ignore next */
   public getState(): ClassState {
     return this.state;
   }
 
+  /* istanbul ignore next */
   public setState(newState: ClassState): void {
     Object.assign(this.state, newState);
   }
