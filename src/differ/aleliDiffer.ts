@@ -1,46 +1,27 @@
 import { CustomHTMLElement } from "@src/types/renderer";
-import { isNotTextNode } from "@src/utils/detectNodeUtils";
+import DetectNodeUtils from "@src/utils/detectNodeUtils";
 import { Differ } from "./differ";
 import RendererUtilities from "@src/types/rendererUtilities"
 import { VNode } from "@src/types/vNode";
+import Component from "@src/types/component";
 
 export default class AleliDiffer implements Differ{
   private renderUtilities : RendererUtilities;
+  private detectNodeUtils : DetectNodeUtils
 
-  constructor(renderUtilities : RendererUtilities){
+  constructor(renderUtilities : RendererUtilities, detectNodeUtils: DetectNodeUtils = new DetectNodeUtils()){
     this.renderUtilities = renderUtilities
+    this.detectNodeUtils = detectNodeUtils
   }
 
   diffNodes(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void {
     if (typeof newNode.type !== "string") {
-      if (!newNode.type.isMounted()) {
-        newNode.type.mounting();
-        newNode.type.mount();
-      }
-      this.diffNodes(newNode.type.render(newNode.props), dom, oldNode);
+      this.handleDiffClassComponent(newNode,dom,oldNode)
     } else {
-      newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
-      this.renderUtilities.insertElementIntoDom(dom, newNode);
-
-      let children: Array<VNode> = newNode.props.children as Array<VNode>;
-
-      children.map((child, index) => {
-        let oldestChild: VNode = this.findOldChildrenIfExists(
-          oldNode,
-          child,
-          index
-        );
-        this.diffNodes(child, newNode.dom!, oldestChild);
-      });
-
-
-      if (isNotTextNode(newNode)) {
-        this.diffProps(oldNode.props, newNode.props, newNode.dom as CustomHTMLElement);
-      }
-
-      Object.assign(oldNode, newNode);
+      this.handleDiffBaseComponent(newNode,dom,oldNode)
     }
   }
+
 
   public findOldChildrenIfExists(
     oldNode: VNode<{}>,
@@ -118,4 +99,35 @@ export default class AleliDiffer implements Differ{
     });
   }
 
+  private handleDiffClassComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void{
+    const classComponent : Component = newNode.type as Component
+    if (!classComponent.isMounted()) {
+      classComponent.mounting();
+      classComponent.mount();
+    }
+    this.diffNodes(classComponent.render(newNode.props), dom, oldNode);
+  }
+
+  private handleDiffBaseComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>) : void {
+    newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
+      this.renderUtilities.insertElementIntoDom(dom, newNode);
+
+      let children: Array<VNode> = newNode.props.children as Array<VNode>;
+
+      children.map((child, index) => {
+        let oldestChild: VNode = this.findOldChildrenIfExists(
+          oldNode,
+          child,
+          index
+        );
+        this.diffNodes(child, newNode.dom!, oldestChild);
+      });
+
+      if (this.detectNodeUtils.isNotTextNode(newNode)) {
+        this.diffProps(oldNode.props, newNode.props, newNode.dom as CustomHTMLElement);
+      }
+
+      Object.assign(oldNode, newNode);
+  }
 }
+
