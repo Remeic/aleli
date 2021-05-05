@@ -1,9 +1,14 @@
 import {Children, VNode } from "@src/types/vNode";
 
 
-export  function isVNode(node: Children) {
-  return node && typeof node === "object" && "props" in node;
+export default class DetectNodeUtils{
+  isVNode(node: Children) {
+    return !!node && typeof node === "object" && "props" in node;
+  }
+  
+  isNotTextNode(node: VNode) {
+    return this.isVNode(node) && node.type !== '$TEXT'
+  }
 }
-export  function isNotTextNode(node: VNode) {
-  return isVNode(node) && node.type !== '$TEXT'
-}
+
+
