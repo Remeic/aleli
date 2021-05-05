@@ -124,3 +124,11 @@ describe('AleliRenderer render method', () => {
 
 
 });
+
+describe('AleliRenderer can be used without args', () => {
+    let aleliRenderer : AleliRenderer
+
+    it('AleliRender can be initialized without args', () => {
+      expect(() => aleliRenderer = new AleliRenderer()).not.toThrowError()
+    });
+});
