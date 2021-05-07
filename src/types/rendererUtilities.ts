@@ -36,7 +36,10 @@ export default class RendererUtilities {
     dom: CustomHTMLElement | Text,
     newNode: VNode<{}>
   ) {
-    newNode.dom && dom.insertBefore(newNode.dom, null);
+    if(!("dom" in newNode)){
+      throw new Error("Can't insert element, VNode missing dom prop");
+    }
+    dom.insertBefore(newNode.dom as HTMLElement, null);
   }
 
   public removeProperty(htmlElement: CustomHTMLElement, prop: string) {
@@ -48,10 +51,6 @@ export default class RendererUtilities {
       let name = prop === 'className' ? 'class' : prop
       htmlElement.removeAttribute(name);
     }
-  }
-
-  public removeOldChild(oldNode: VNode<{}>): void {
-    if(oldNode.dom) oldNode.dom.remove()
   }
 
   public removeOldChildren(oldNode: VNode<{}>): void {
@@ -75,6 +74,8 @@ export default class RendererUtilities {
     return htmlElement;
   }
 
+  private removeOldChild(oldNode: VNode<{}>): void {
+    if(oldNode.dom) oldNode.dom.remove()
+  }
   
-
 }
