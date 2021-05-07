@@ -41,5 +41,23 @@ describe('Class Component tests', () => {
     expect(valueOfKey).toBe(1)
   });
 
+  it('AleliComponent mounted should be false after initialization', () => {
+    expect(testComponent.isMounted()).toBe(false)
+  });
+
+  it('AleliComponent destroyed should be false after initialization', () => {
+    expect(testComponent.isDestroyed()).toBe(false)
+  });
+
+  it('AleliComponent destroy set component as destroyed', () => {
+    testComponent.destroy()
+    expect(testComponent.isDestroyed()).toBe(true)
+  });
+
+  it('AleliComponent mount set component as mounted', () => {
+    testComponent.mount()
+    expect(testComponent.isMounted()).toBe(true)
+  });
+
 
 })  

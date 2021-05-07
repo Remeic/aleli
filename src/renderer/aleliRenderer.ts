@@ -40,6 +40,9 @@ export default class AleliRenderer implements RendererBase {
 
 
   private removeRootDom(root: CustomHTMLElement) {
-    root._vnode && root._vnode.dom && root._vnode.dom.remove();
+    if(!root._vnode!.dom){
+      throw new Error("Error, can't remove dom when root _vnode prop not have dom prop");
+    }
+    root._vnode!.dom.remove();
   }
 }

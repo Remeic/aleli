@@ -5,10 +5,12 @@ import ClassState from "./classState";
 
 export default abstract class AleliComponent implements Component {
   protected readonly state: ClassState;
-  private mounted: boolean = false;
-  private destroyed: boolean = false;
+  private mounted: boolean;
+  private destroyed: boolean;
 
   constructor() {
+    this.mounted = false
+    this.destroyed = false
     this.state = {};
   }
   

@@ -114,20 +114,22 @@ export default class AleliDiffer implements Differ{
 
       let children: Array<VNode> = newNode.props.children as Array<VNode>;
 
-      children.map((child, index) => {
-        let oldestChild: VNode = this.findOldChildrenIfExists(
-          oldNode,
-          child,
-          index
-        );
-        this.diffNodes(child, newNode.dom!, oldestChild);
-      });
+      children.map((child, index) =>  this.findOldChildAndDiff(oldNode, child, index, newNode));
 
       if (this.detectNodeUtils.isNotTextNode(newNode)) {
         this.diffProps(oldNode.props, newNode.props, newNode.dom as CustomHTMLElement);
       }
 
       Object.assign(oldNode, newNode);
+  }
+
+  private findOldChildAndDiff(oldNode: VNode<{}>, child: VNode<{}>, index: number, newNode: VNode<{}>) {
+    let oldestChild: VNode = this.findOldChildrenIfExists(
+      oldNode,
+      child,
+      index
+    );
+    this.diffNodes(child, newNode.dom!, oldestChild);
   }
 }
 

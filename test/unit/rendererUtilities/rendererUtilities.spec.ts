@@ -1,5 +1,6 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/differ/differ";
+import { CustomHTMLElement } from "@src/types/renderer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import { VNode } from "@src/types/vNode";
 import { spy, verify } from "ts-mockito";
@@ -134,17 +135,20 @@ describe("RendererUtilities method setProperty", () => {
   });
 
   it("RendererUtilities method setProperty should set id property to HTMLElement", () => {
-    const htmlElement = document.createElement("div");
+    const htmlElement : HTMLElement = document.createElement("div");
+    const spiedElement : any = jest.spyOn(htmlElement, 'setAttribute')
     const props: VNode["props"] = {
       id: 1,
       children: [],
     };
     renderUtilities.setProperty(htmlElement, "id", props);
     expect(htmlElement).toHaveProperty("id", "1");
+    expect(htmlElement['id']).toBe("1")
+    expect(spiedElement).not.toBeCalled()
   });
 
   it("RendererUtilities method setProperty should throw error if prop key is not in props", () => {
-    const htmlElement = document.createElement("div");
+    const htmlElement : HTMLElement = document.createElement("div");
     const propName: string = "color";
     const props: VNode["props"] = {
       id: 1,
@@ -163,11 +167,23 @@ describe("RendererUtilities method setProperty", () => {
       onClick: mocked,
       children: [],
     };
-    const htmlElement = document.createElement("div");
+    const htmlElement : HTMLElement = document.createElement("div");
     renderUtilities.setProperty(htmlElement, "onClick", props);
     expect(htmlElement).toHaveProperty("onclick");
     expect(typeof htmlElement.onclick!).toBe("function");
   });
+
+  it("RendererUtilities method setProperty should set custom attribute", () => {
+    const props: VNode["props"] = {
+      isValid: true,
+      children: [],
+    };
+    const htmlElement : CustomHTMLElement = document.createElement("div");
+    renderUtilities.setProperty(htmlElement, "isValid", props);
+    expect(htmlElement.getAttribute('isValid')).toBe("true")
+    expect(htmlElement['isValid']).toBe(undefined)
+  });
+
 
 });
 

@@ -52,6 +52,48 @@ describe('AleliRenderer render method', () => {
     expect(() => aleliRenderer.render(vnode,rootElement)).toThrowError('AleliRenderer, can\'t call render method on Text or Comment root node')
   });
 
+  it('AleliRenderer render method should throw exception if root element not have _vdom prop', () => {
+    const rootElement : any = document.createElement("div")
+    rootElement._vnode = {
+      type: 'span',
+      props: {
+        children: []
+      },
+    } 
+
+    const vnode : VNode = {
+      type: 'div',
+      props: {
+        children: []
+      }
+    }
+    expect(() => aleliRenderer.render(vnode,rootElement)).toThrowError("Error, can't remove dom when root _vnode prop not have dom prop")
+  });
+
+  it('AleliRenderer render method should not override _vnode if already exists', () => {
+    const rootElement : any = document.createElement("div")
+    const divElement : CustomHTMLElement = document.createElement("div")
+
+    rootElement._vnode = {
+      type: 'span',
+      props: {
+        children: []
+      },
+      dom: divElement
+    } 
+
+    const vnode : VNode = {
+      type: 'div',
+      props: {
+        children: []
+      }
+    }
+    aleliRenderer.render(vnode,rootElement)
+    expect(rootElement._vnode).not.toBe(emptyVNode)
+    verify(mockAleliDiffer.diffNodes(vnode,rootElement,deepEqual(emptyVNode))).never()
+
+  });
+
   it('AleliRenderer render method remove root dom element if type between re-renders diff', () => {
     const rootElement : CustomHTMLElement = document.createElement("div")
     const spanElement : CustomHTMLElement = document.createElement("span")
@@ -78,7 +120,6 @@ describe('AleliRenderer render method', () => {
 
   it('AleliRenderer render method set root _vnode to empty if not have a vnode', () => {
     const rootElement : CustomHTMLElement = document.createElement("div")
-    const spanElement : CustomHTMLElement = document.createElement("span")
 
     const vnode : VNode = {
       type: "div",
@@ -89,6 +130,7 @@ describe('AleliRenderer render method', () => {
 
     aleliRenderer.render(vnode,rootElement)
     expect(rootElement).toHaveProperty('_vnode',emptyVNode)
+
   });
 
   it('AleliRenderer render method call AleliDiffer diffNodes with vnode, root element and _vnode root empty if root not have _vnode', () => {
@@ -120,8 +162,6 @@ describe('AleliRenderer render method', () => {
     aleliRenderer.render(vnode,rootElement)
     verify(mockAleliDiffer.diffNodes(vnode,rootElement,rootElement._vnode)).once()
   });
-
-
 
 });
 

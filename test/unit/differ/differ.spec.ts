@@ -699,6 +699,12 @@ describe('aleliDiffer diffNodes method ', () => {
         children: []
       },
     }
+    const secondChild: VNode = {
+      type: "h1",
+      props: {
+        children: []
+      },
+    }
     const newChild: VNode = {
       type: "span",
       props: {
@@ -708,7 +714,7 @@ describe('aleliDiffer diffNodes method ', () => {
     const oldVnode : VNode = {
       type: "div",
       props: {
-        children: [oldChild]
+        children: [oldChild,secondChild]
       },
     }
     const vnode: VNode = {
@@ -720,6 +726,8 @@ describe('aleliDiffer diffNodes method ', () => {
     when(mockedRendererUtilities.createElement(vnode)).thenReturn(domElement)
     when(spiedAleliDiffer.findOldChildrenIfExists(oldVnode,newChild,0)).thenReturn(oldChild)
     aleliDiffer.diffNodes(vnode,root, oldVnode)
+    verify(spiedAleliDiffer.findOldChildrenIfExists(oldVnode,newChild,0)).once()
+    verify(spiedAleliDiffer.findOldChildrenIfExists(oldVnode,newChild,1)).never()
     verify(spiedAleliDiffer.diffNodes(newChild,vnode.dom!,oldChild))
   });
 
@@ -744,6 +752,29 @@ describe('aleliDiffer diffNodes method ', () => {
     aleliDiffer.diffNodes(vnode,root, oldVnode)
     verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode.props),deepEqual(vnode.props),vnode.dom! as CustomHTMLElement)).once()
   });
+
+  it('diffNodes method with base Component should\'t call diffProps method if vnode is a rapresentation of text node', () => {
+    const root : CustomHTMLElement = document.createElement("div")
+    const domElement : HTMLElement = document.createElement("div")
+    
+    const oldVnode : VNode = {
+      type: "div",
+      props: {
+        children: []
+      },
+    }
+    const vnode: VNode = {
+      type: "$TEXT",
+      props: {
+        children: []
+      }
+    }
+    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
+    when(mockedRendererUtilities.createElement(vnode)).thenReturn(domElement)
+    aleliDiffer.diffNodes(vnode,root, oldVnode)
+    verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode.props),deepEqual(vnode.props),vnode.dom! as CustomHTMLElement)).never()
+  });
+
   it('diffNodes method with base Component should\'t call diffProps method if vnode is a rapresentation of text node', () => {
     const root : CustomHTMLElement = document.createElement("div")
     const domElement : HTMLElement = document.createElement("div")
