@@ -1,5 +1,5 @@
-import AleliComponent from "../../../src/components/AleliComponent";
-import { Children, VNode } from "@src/types/vnode";
+import AleliComponent from "@src/components/aleliComponent";
+import { Children, VNode } from "@src/types/vNode";
 
 export default  class TestComponent extends AleliComponent {
   destroying(): void {

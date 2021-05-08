@@ -1,4 +1,4 @@
-import {DomTreeSerializer,DomTreeStringify} from '@src/utils/DomTreeSerializer'
+import {DomTreeSerializer,DomTreeStringify} from '@src/utils/domTreeSerializer'
 
 describe('Stringify DOM tree', () => {
   let domTreeStringify: DomTreeSerializer = new DomTreeStringify();
