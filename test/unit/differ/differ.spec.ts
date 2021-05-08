@@ -1,7 +1,7 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/differ/differ";
 import { CustomHTMLElement } from "@src/types/renderer";
-import RendererUtilities from "@src/types/rendererUtilities";
+import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { VNode } from "@src/types/vNode";
 import {
   mock,
@@ -14,6 +14,7 @@ import {
 } from "ts-mockito"
 import TestComponent from "../__mocks__/testComponent.mock";
 import DetectNodeUtils from "@src/utils/detectNodeUtils";
+import RendererUtilities from "@src/types/rendererUtilities";
 
 describe("aleliDiffer findOldChildrenIfExists method", () => {
   let aleliDiffer : Differ
@@ -24,7 +25,7 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
   let emtpyVNode: VNode
 
   beforeAll(() => {
-    mockedRendererUtilities = mock(RendererUtilities)
+    mockedRendererUtilities = mock(AleliRendererUtilities)
     instanceRendererUtilities = instance(mockedRendererUtilities)
     aleliDiffer = new AleliDiffer(instanceRendererUtilities)
     mockedTestComponent = mock(TestComponent)
@@ -385,7 +386,7 @@ describe("aleliDiffer diffProps method", () => {
   let mockedRendererUtilities : RendererUtilities
 
   beforeAll(() => {
-    mockedRendererUtilities = mock(RendererUtilities)
+    mockedRendererUtilities = mock(AleliRendererUtilities)
     rendererUtilities = instance(mockedRendererUtilities)
     aleliDiffer = new AleliDiffer(rendererUtilities)
   });
@@ -513,7 +514,7 @@ describe('aleliDiffer diffNodes method ', () => {
   let instanceDetectNodeUtils: DetectNodeUtils;
 
   beforeAll(() => {
-    mockedRendererUtilities = mock(RendererUtilities)
+    mockedRendererUtilities = mock(AleliRendererUtilities)
     rendererUtilities = instance(mockedRendererUtilities)
     aleliDiffer = new AleliDiffer(rendererUtilities)
     mockedTestComponent = mock(TestComponent)

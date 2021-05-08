@@ -1,6 +1,7 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/differ/differ";
 import AleliRenderer from "@src/renderer";
+import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { CustomHTMLElement, RendererBase } from "@src/types/renderer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import { VNode } from "@src/types/vNode";
@@ -18,7 +19,7 @@ describe('AleliRenderer render method', () => {
   beforeAll(() => {
     mockAleliDiffer = mock(AleliDiffer)
     instanceAleliDiffer = instance(mockAleliDiffer)
-    mockRendererUtilities = mock(RendererUtilities)
+    mockRendererUtilities = mock(AleliRendererUtilities)
     instanceRendererUtilities = instance(mockRendererUtilities)
     aleliRenderer = new AleliRenderer(instanceAleliDiffer, instanceRendererUtilities)
     spiedAleliRenderer = spy(aleliRenderer)

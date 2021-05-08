@@ -1,15 +1,16 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/differ/differ";
 import { CustomHTMLElement } from "@src/types/renderer";
-import RendererUtilities from "@src/types/rendererUtilities";
+import RendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { VNode } from "@src/types/vNode";
 import { spy, verify } from "ts-mockito";
+import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 
 describe("aleliDiffer method createElement", () => {
   let rendererUtilities : RendererUtilities;
 
   beforeAll(() => {
-    rendererUtilities = new RendererUtilities();
+    rendererUtilities = new AleliRendererUtilities();
   });
 
   it("aleliDiffer method createElement should return DOM HTMLElement if type is not $TEXT", () => {
@@ -42,7 +43,7 @@ describe("aleliDiffer method removeOldChildren", () => {
   let rendererUtilities : RendererUtilities;
 
   beforeAll(() => {
-    rendererUtilities = new RendererUtilities();
+    rendererUtilities = new AleliRendererUtilities();
   });
 
   it("aleliDiffer method removeOldChild should remove Dom node", () => {
@@ -94,7 +95,7 @@ describe("aleliDiffer method removeOldChildren", () => {
 describe("aleliDiffer method removeProperty", () => {
   let rendererUtilities : RendererUtilities;
   beforeAll(() => {
-    rendererUtilities = new RendererUtilities()
+    rendererUtilities = new AleliRendererUtilities()
   });
 
   it("aleliDiffer method removeProperty should remove attribute from HTMLElement", () => {
@@ -131,7 +132,7 @@ describe("aleliDiffer method removeProperty", () => {
 describe("RendererUtilities method setProperty", () => {
   let renderUtilities: RendererUtilities;
   beforeAll(() => {
-    renderUtilities = new RendererUtilities();
+    renderUtilities = new AleliRendererUtilities();
   });
 
   it("RendererUtilities method setProperty should set id property to HTMLElement", () => {
@@ -190,7 +191,7 @@ describe("RendererUtilities method setProperty", () => {
 describe("RendererUtilities insertElementIntoDom method", () => {
   let renderUtilities: RendererUtilities;
   beforeAll(() => {
-    renderUtilities = new RendererUtilities();
+    renderUtilities = new AleliRendererUtilities();
   });
 
   it('RendererUtilities insertElementIntoDom throw error if vnode have not dom prop', () => {

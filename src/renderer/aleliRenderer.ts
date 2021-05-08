@@ -3,6 +3,7 @@ import { CustomHTMLElement, RendererBase } from "@src/types/renderer";
 import { Differ } from "@src/differ/differ";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import RendererUtilities from "@src/types/rendererUtilities";
+import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 
 export default class AleliRenderer implements RendererBase {
   private aleliDiffer: Differ;
@@ -14,7 +15,7 @@ export default class AleliRenderer implements RendererBase {
       this.rendererUtilities = rendererUtilities;
     }
     else{
-      this.rendererUtilities = new RendererUtilities()
+      this.rendererUtilities = new AleliRendererUtilities()
       this.aleliDiffer = new AleliDiffer(this.rendererUtilities)
     }
   }
