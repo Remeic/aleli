@@ -1,5 +1,5 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
-import { Differ } from "@src/differ/differ";
+import { Differ } from "@src/types/differ";
 import AleliRenderer from "@src/renderer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { CustomHTMLElement, RendererBase } from "@src/types/renderer";

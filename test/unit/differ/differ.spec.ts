@@ -1,5 +1,5 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
-import { Differ } from "@src/differ/differ";
+import { Differ } from "@src/types/differ";
 import { CustomHTMLElement } from "@src/types/renderer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { VNode } from "@src/types/vNode";
@@ -12,16 +12,17 @@ import {
   deepEqual,
   reset,
 } from "ts-mockito"
-import TestComponent from "../__mocks__/testComponent.mock";
+import TestComponent from "../../__mocks__/testComponent.mock"
 import DetectNodeUtils from "@src/utils/detectNodeUtils";
 import RendererUtilities from "@src/types/rendererUtilities";
+import Component from "@src/types/component";
 
 describe("aleliDiffer findOldChildrenIfExists method", () => {
   let aleliDiffer : Differ
   let mockedRendererUtilities: RendererUtilities
   let instanceRendererUtilities : RendererUtilities
-  let mockedTestComponent : TestComponent
-  let instanceTestComponent: TestComponent
+  let mockedTestComponent : Component
+  let instanceTestComponent: Component
   let emtpyVNode: VNode
 
   beforeAll(() => {
@@ -374,7 +375,7 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
     
     when(mockedRendererUtilities.getOldChildren(vnode)).thenReturn([oldVNode])
     aleliDiffer.findOldChildrenIfExists(vnode, newChildVNode, 0)
-    verify(mockedRendererUtilities.removeOldChildren(vnode)).once()
+    verify(mockedRendererUtilities.removeOldChild(vnode)).once()
   });
 
 });
@@ -396,106 +397,176 @@ describe("aleliDiffer diffProps method", () => {
   });
 
   it('differProp should\'nt call setProperty for children prop', () => {
-    const oldProp: VNode["props"] = {
-      children: []
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
-    verify(mockedRendererUtilities.setProperty(htmlElement,"children",newProp)).never()
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"children",newVnode.props)).never()
   });
 
   it('differProp should\'nt call setProperty for key prop', () => {
-    const oldProp: VNode["props"] = {
-      children: []
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        key:2,
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      key: 1,
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        key:1,
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
-    verify(mockedRendererUtilities.setProperty(htmlElement,"key",newProp)).never()
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"key",newVnode.props)).never()
   });
 
   it('differProps should call setProperty for valid prop', () => {
-    const oldProp: VNode["props"] = {
-      children: []
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      id: 1,
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        id:1,
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
-    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newProp)).once()
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newVnode.props)).once()
   });
 
-  it('differProps should\'nt call setProperty if specific key-value of prop not change between renders', () => {
-    const oldProp: VNode["props"] = {
-      id:1,
-      children: []
+  it('differProps should\'nt call setProperty if specific key-value of prop not change between renders and the type is the same', () => {
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        id:1,
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      id: 1,
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        id:1,
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
-    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newProp)).never()
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newVnode.props)).never()
+  });
+
+  it('differProps should call setProperty if specific key-value of prop not change between renders but the type differs', () => {
+    const oldVnode: VNode = {
+      type: "span",
+      props:{
+        id:1,
+        children: []
+      }
+    }
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        id:1,
+        children: []
+      }
+    }
+    const htmlElement : HTMLElement = document.createElement("div")
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.setProperty(htmlElement,"id",newVnode.props)).once()
   });
 
   it('differProp should\'nt call remove for children prop', () => {
-    const oldProp: VNode["props"] = {
-      children: []
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
     verify(mockedRendererUtilities.removeProperty(htmlElement,"children")).never()
   });
 
-  it('differProp should\'nt call removeProperty for key prop', () => {
-    const oldProp: VNode["props"] = {
-      key: 1,
-      children: []
+  it('differProp should call removeProperty for key prop if new vnode not have one', () => {
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        key: 1,
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
+
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
-    verify(mockedRendererUtilities.removeProperty(htmlElement,"key")).never()
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
+    verify(mockedRendererUtilities.removeProperty(htmlElement,"key")).once()
   });
 
   it('differProps should call removeProperty for valid prop', () => {
-    const oldProp: VNode["props"] = {
-      id: 1,
-      children: []
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        id: 1,
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
     verify(mockedRendererUtilities.removeProperty(htmlElement,"id")).once()
   });
 
-  it('differProps should\'nt call removeProperty if specific key-value of prop not change between renders', () => {
-    const oldProp: VNode["props"] = {
-      id:1,
-      children: []
+  it('differProps should\'nt call removeProperty if specific key-value of prop not change between renders and the vnode type is the same', () => {
+    const oldVnode: VNode = {
+      type: "div",
+      props:{
+        id: 1,
+        children: []
+      }
     }
-    const newProp: VNode["props"] = {
-      id: 1,
-      children: []
+    const newVnode: VNode = {
+      type: "div",
+      props:{
+        id: 1,
+        children: []
+      }
     }
     const htmlElement : HTMLElement = document.createElement("div")
-    aleliDiffer.diffProps(oldProp,newProp, htmlElement)
+    aleliDiffer.diffProps(oldVnode,newVnode, htmlElement)
     verify(mockedRendererUtilities.removeProperty(htmlElement,"id")).never()
   });
 
@@ -751,7 +822,7 @@ describe('aleliDiffer diffNodes method ', () => {
     when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     when(mockedRendererUtilities.createElement(vnode)).thenReturn(domElement)
     aleliDiffer.diffNodes(vnode,root, oldVnode)
-    verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode.props),deepEqual(vnode.props),vnode.dom! as CustomHTMLElement)).once()
+    verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode),deepEqual(vnode),vnode.dom! as CustomHTMLElement)).once()
   });
 
   it('diffNodes method with base Component should\'t call diffProps method if vnode is a rapresentation of text node', () => {
@@ -773,7 +844,7 @@ describe('aleliDiffer diffNodes method ', () => {
     when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     when(mockedRendererUtilities.createElement(vnode)).thenReturn(domElement)
     aleliDiffer.diffNodes(vnode,root, oldVnode)
-    verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode.props),deepEqual(vnode.props),vnode.dom! as CustomHTMLElement)).never()
+    verify(spiedAleliDiffer.diffProps(deepEqual(oldVnode),deepEqual(vnode),vnode.dom! as CustomHTMLElement)).never()
   });
 
   it('diffNodes method with base Component should\'t call diffProps method if vnode is a rapresentation of text node', () => {
@@ -795,7 +866,7 @@ describe('aleliDiffer diffNodes method ', () => {
     when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     when(mockedRendererUtilities.createElement(vnode)).thenReturn(domElement)
     aleliDiffer.diffNodes(vnode,root, oldVnode)
-    verify(spiedAleliDiffer.diffProps(oldVnode.props,vnode.props,vnode.dom! as CustomHTMLElement)).never()
+    verify(spiedAleliDiffer.diffProps(oldVnode,vnode,vnode.dom! as CustomHTMLElement)).never()
   });
 
   it('diffNodes method with base Component should use Object assign to clone new vnode inside old node', () => {

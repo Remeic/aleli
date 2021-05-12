@@ -20,4 +20,6 @@ export default interface RendererUtilities {
   removeOldChildren(oldNode: VNode<{}>): void
 
   getOldChildren(oldNode: VNode<{}>): VNode<{}>[]
+
+  removeOldChild(oldNode: VNode<{}>): void
 }

@@ -1,12 +1,12 @@
 import { CustomHTMLElement } from "@src/types/renderer";
 import DetectNodeUtils from "@src/utils/detectNodeUtils";
-import { Differ } from "./differ";
+import { Differ } from "@src/types/differ";
 import { VNode } from "@src/types/vNode";
 import Component from "@src/types/component";
 import RendererUtilities from "@src/types/rendererUtilities";
 
 export default class AleliDiffer implements Differ{
-  private renderUtilities : RendererUtilities;
+  private renderUtilities : RendererUtilities
   private detectNodeUtils : DetectNodeUtils
 
   constructor(renderUtilities : RendererUtilities, detectNodeUtils: DetectNodeUtils = new DetectNodeUtils()){
@@ -23,7 +23,7 @@ export default class AleliDiffer implements Differ{
   }
 
 
-  public findOldChildrenIfExists(
+  findOldChildrenIfExists(
     oldNode: VNode<{}>,
     child: VNode<{}>,
     index: number
@@ -55,7 +55,7 @@ export default class AleliDiffer implements Differ{
             oldChildNotFinded.type.destroying()
             oldChildNotFinded.type.destroy()
           }
-          this.renderUtilities.removeOldChildren(oldNode);
+          this.renderUtilities.removeOldChild(oldNode);
         }
         return result;
 
@@ -64,36 +64,36 @@ export default class AleliDiffer implements Differ{
   }
 
   diffProps(
-    oldProps: VNode["props"],
-    newProps: VNode["props"],
+    oldVnode: VNode,
+    newVnode: VNode,
     htmlElement: CustomHTMLElement
   ): void {
-    this.addNewProps(oldProps,newProps,htmlElement)
-    this.removeOldProps(oldProps,newProps,htmlElement)
+    this.addNewProps(oldVnode,newVnode,htmlElement)
+    this.removeOldProps(oldVnode,newVnode,htmlElement)
   }
 
   private addNewProps(
-    oldProps: VNode["props"],
-    newProps: VNode["props"],
+    oldVnode: VNode,
+    newVnode: VNode,
     htmlElement: CustomHTMLElement
   ): void {
-    const {children, key, ...props} = newProps
+    const {children, key, ...props} = newVnode.props
     Object.keys(props)
     .forEach((prop) => {
-      if (newProps[prop] !== oldProps[prop]) {
-        this.renderUtilities.setProperty(htmlElement, prop, newProps);
+      if (newVnode.props[prop] !== oldVnode.props[prop] || newVnode.type !== oldVnode.type) {
+        this.renderUtilities.setProperty(htmlElement, prop, newVnode.props);
       }
     });
   }
 
   private removeOldProps(
-    oldProps: VNode["props"],
-    newProps: VNode["props"],
+    oldVnode: VNode,
+    newVnode: VNode,
     htmlElement: CustomHTMLElement
   ): void {
-    const {children, key, ...props} = oldProps
+    const {children, ...props} = oldVnode.props
     Object.keys(props)
-    .filter((prop) => !(prop in newProps))
+    .filter((prop) => !(prop in newVnode.props))
     .forEach((prop) => {
       this.renderUtilities.removeProperty(htmlElement, prop);
     });
@@ -109,7 +109,7 @@ export default class AleliDiffer implements Differ{
   }
 
   private handleDiffBaseComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>) : void {
-    newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
+      newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
       this.renderUtilities.insertElementIntoDom(dom, newNode);
 
       let children: Array<VNode> = newNode.props.children as Array<VNode>;
@@ -117,7 +117,7 @@ export default class AleliDiffer implements Differ{
       children.map((child, index) =>  this.findOldChildAndDiff(oldNode, child, index, newNode));
 
       if (this.detectNodeUtils.isNotTextNode(newNode)) {
-        this.diffProps(oldNode.props, newNode.props, newNode.dom as CustomHTMLElement);
+        this.diffProps(oldNode, newNode, newNode.dom as CustomHTMLElement);
       }
 
       Object.assign(oldNode, newNode);

@@ -1,5 +1,5 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
-import { Differ } from "@src/differ/differ";
+import { Differ } from "@src/types/differ";
 import { CustomHTMLElement } from "@src/types/renderer";
 import RendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { VNode } from "@src/types/vNode";
@@ -86,7 +86,7 @@ describe("aleliDiffer method removeOldChildren", () => {
         children: [childVnode],
       },
     };
-    rendererUtilities.removeOldChildren(vnode);
+    rendererUtilities.removeOldChild(vnode);
     verify(spiedChild.remove()).never()
   });
 
