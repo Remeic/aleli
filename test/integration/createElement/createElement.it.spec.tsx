@@ -109,7 +109,6 @@ describe("Integration Test for createElement, interact with JSX", () => {
     const aleliDivElement: VNode = (
       <AleliComponent id="1" testProp={false}></AleliComponent>
     );
-    console.log(aleliDivElement);
     expect(aleliDivElement.type).toBe(AleliComponent as Function);
     expect(aleliDivElement.props).toStrictEqual(vnodeAleliElementProps);
   });
@@ -127,7 +126,6 @@ describe("Integration Test for createElement, interact with JSX", () => {
         <AleliComponent></AleliComponent>
       </AleliComponent>
     );
-    console.log(aleliDivElement);
     expect(aleliDivElement.type).toBe(AleliComponent as Function);
     const children : Array<VNode> = aleliDivElement.props.children as Array<VNode>
     expect(children[0].type).toBe(AleliComponent as Function);
