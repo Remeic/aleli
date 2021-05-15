@@ -1,6 +1,6 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/types/differ";
-import { CustomHTMLElement } from "@src/types/renderer";
+import { CustomHTMLElement, Renderer } from "@src/types/renderer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { VNode } from "@src/types/vNode";
 import {
@@ -17,9 +17,8 @@ import DetectNodeUtils from "@src/utils/detectNodeUtils";
 import RendererUtilities from "@src/types/rendererUtilities";
 import Component from "@src/types/component";
 
-describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilities", () => {
-  let mockedDetectNodeUtils: DetectNodeUtils 
-  let instanceDetectNodeUtils: DetectNodeUtils
+describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilities and DetectNodeUtils", () => {
+  let detectNodeUtils: DetectNodeUtils 
   let aleliDiffer: Differ
   let aleliRendererUtilities: RendererUtilities
   let mockedTestComponent: Component
@@ -28,15 +27,13 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
   beforeAll(() => {
     mockedTestComponent = mock(TestComponent)
     instanceTestComponent = instance(mockedTestComponent)
-    mockedDetectNodeUtils = mock(DetectNodeUtils)
-    instanceDetectNodeUtils = instance(mockedDetectNodeUtils)
+    detectNodeUtils = new DetectNodeUtils()
     aleliRendererUtilities = new AleliRendererUtilities()
-    aleliDiffer = new AleliDiffer(aleliRendererUtilities,instanceDetectNodeUtils)
+    aleliDiffer = new AleliDiffer(aleliRendererUtilities,detectNodeUtils)
   })
 
   beforeEach(() => {
     reset(mockedTestComponent)
-    reset(mockedDetectNodeUtils)
   })
 
   it('aleliDiffer diffNodes method should update dom tree with base component', () => {
@@ -57,7 +54,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child).toStrictEqual(divElement)
@@ -84,7 +80,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child).toStrictEqual(divElement)
@@ -111,7 +106,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child).toStrictEqual(divElement)
@@ -138,7 +132,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child).toStrictEqual(divElement)
@@ -162,7 +155,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     expect(oldVnode).toStrictEqual(vnode)
   })
@@ -203,10 +195,7 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
       }
     }
 
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(oldVnode)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(oldTextVnode)).thenReturn(false)
-    when(mockedDetectNodeUtils.isNotTextNode(newTextVnode)).thenReturn(false)
+    
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child.textContent).toBe(newText)
@@ -258,7 +247,7 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
     }
 
     const oldVnode: VNode = {
-      type: "span",
+      type: "div",
       props: {
         id:1,
         children:[firstOldChild,secondOldChild]
@@ -271,13 +260,6 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
         children:[secondOldChild,newChild]
       }
     }
-
-    when(mockedDetectNodeUtils.isNotTextNode(firstOldChild)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(secondOldChild)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(textOldChild)).thenReturn(false)
-    when(mockedDetectNodeUtils.isNotTextNode(newChild)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(vnode)).thenReturn(true)
-    when(mockedDetectNodeUtils.isNotTextNode(oldVnode)).thenReturn(true)
 
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
@@ -316,214 +298,11 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
     when(mockedTestComponent.destroy()).thenCall(()=>{})
     when(mockedTestComponent.destroying()).thenCall(()=>{})
     when(mockedTestComponent.isMounted()).thenReturn(false)
-    when(mockedDetectNodeUtils.isNotTextNode(componentRenderResult)).thenReturn(true)
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
     expect(child).toStrictEqual(divElement)
   })
 
-  it('AleliDiffer diffProps methos, should update base prop if changed between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        id:1,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        id:2,
-        children: []
-      },
-      dom: divElement
-    }
-
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.id).toBe("2")
-  })
-
-  it('AleliDiffer diffProps methos, should keep prop if not changes between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    divElement.id = '1'
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        id:1,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        id:1,
-        children: []
-      },
-      dom: divElement
-    }
-
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.id).toBe("1")
-  })
-
-  it('AleliDiffer diffProps methos, should remove base prop if new vnode for same element not have between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    divElement.id = '1'
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        id:1,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        children: []
-      },
-      dom: divElement
-    }
-
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.id).toBe("")
-  })
-
-  it('AleliDiffer diffProps methos, should add base prop if new old vnode not have between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        id:1,
-        children: []
-      },
-      dom: divElement
-    }
-    expect(divElement.id).toBe("")
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.id).toBe("1")
-  })
-
-  it('AleliDiffer diffProps methos, should update custom prop if change between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    divElement.setAttribute("testProp","true")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: true,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: false,
-        children: []
-      },
-      dom: divElement
-    }
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.getAttribute('testProp')).toBe("false")
-  })
-
-  it('AleliDiffer diffProps methos, should update custom prop if change between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    divElement.setAttribute("testProp","true")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: true,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        children: []
-      },
-      dom: divElement
-    }
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.getAttribute('testProp')).toBe(null)
-  })
-
-  it('AleliDiffer diffProps methos, should add base prop if new old vnode not have between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: true,
-        children: []
-      },
-      dom: divElement
-    }
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.getAttribute('testProp')).toBe("true")
-  })
-
-  it('AleliDiffer diffProps method, should keep custom prop if not change between render phase with same type', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    divElement.setAttribute("testProp","true")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: true,
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        testProp: true,
-        children: []
-      },
-      dom: divElement
-    }
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.getAttribute('testProp')).toBe("true")
-  })
-
-  it('AleliDiffer diffProps methos, should not add key prop to Html Element', () => {
-    const divElement: HTMLDivElement = document.createElement("div")
-    const oldVnode: VNode = {
-      type: "div",
-      props: {
-        children: []
-      },
-      dom:divElement
-    }
-    const newVnode: VNode = {
-      type: "div",
-      props: {
-        key:2,
-        children: []
-      },
-      dom: divElement
-    }
-
-    aleliDiffer.diffProps(oldVnode,newVnode,divElement)
-    expect(divElement.getAttribute('key')).toBe(null)
-  })
 
   it('AleliDiffer findOldChildrenIfExists method, should return emptyVnode if valid old vnode is not found', () => {
     const emptyVnode: VNode = {
@@ -689,24 +468,4 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
    expect(aleliDiffer.findOldChildrenIfExists(oldVnode,child,0)).toStrictEqual(emptyVnode)
   });
 
-
 });
-
-
-describe("Integration Test for aleliDiffer, integrate Differ with DetectNodeUtils", () => {
-  let mockedAleliRendererUtilities: RendererUtilities
-  let instanceAleliRendererUtilities: RendererUtilities
-  let aleliDiffer: Differ
-  let detectNodeUtils: DetectNodeUtils  
-
-  beforeAll(() => {
-    mockedAleliRendererUtilities = mock(AleliRendererUtilities)
-    instanceAleliRendererUtilities = instance(mockedAleliRendererUtilities)
-    detectNodeUtils = new DetectNodeUtils()
-    aleliDiffer = new AleliDiffer(instanceAleliRendererUtilities,detectNodeUtils)
-  })
-
-  beforeEach(() => {
-    reset(mockedAleliRendererUtilities)
-  })
-})
