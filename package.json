@@ -32,7 +32,7 @@
     "unit": "jest ./test/unit",
     "integration": "yarn unit && jest ./test/integration",
     "mutation": "npx stryker run",
-    "testPR": "yarn test && yarn mutation",
+    "testPR": "yarn integration && yarn mutation",
     "cypress:open": "cypress open"
   }
 }
