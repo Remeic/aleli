@@ -38,7 +38,7 @@ export default class AleliDiffer implements Differ{
           if (
             child.props.key === oldChild.props.key &&
             child.type === oldChild.type
-            && index === oldChildindex
+            
           ) {
             result = oldChild;
           }
@@ -47,7 +47,7 @@ export default class AleliDiffer implements Differ{
           result = undefined
         }
         else {
-          if (child.type === oldChild.type && index === oldChildindex)
+          if (child.type === oldChild.type)
             result = oldChild;
         }
         if(result === undefined){
@@ -55,7 +55,7 @@ export default class AleliDiffer implements Differ{
             oldChildNotFinded.type.destroying()
             oldChildNotFinded.type.destroy()
           }
-          this.renderUtilities.removeOldChild(oldNode);
+          this.renderUtilities.removeOldChild(oldChild);
         }
         return result;
 
@@ -80,7 +80,11 @@ export default class AleliDiffer implements Differ{
     const {children, key, ...props} = newVnode.props
     Object.keys(props)
     .forEach((prop) => {
-      if (newVnode.props[prop] !== oldVnode.props[prop] || newVnode.type !== oldVnode.type) {
+      if (
+        newVnode.props[prop] !== oldVnode.props[prop] ||
+        newVnode.type !== oldVnode.type ||
+        htmlElement.getAttribute(prop) != newVnode.props[prop]
+      ) {
         this.renderUtilities.setProperty(htmlElement, prop, newVnode.props);
       }
     });
@@ -109,18 +113,20 @@ export default class AleliDiffer implements Differ{
   }
 
   private handleDiffBaseComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>) : void {
-      newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
-      this.renderUtilities.insertElementIntoDom(dom, newNode);
+    
+    newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode) : oldNode.dom;
+    this.renderUtilities.insertElementIntoDom(dom, newNode);
+    
+    let children: Array<VNode> = newNode.props.children as Array<VNode>;
+    children.map((child, index) =>  this.findOldChildAndDiff(oldNode, child, index, newNode));
+   
 
-      let children: Array<VNode> = newNode.props.children as Array<VNode>;
+    if (this.detectNodeUtils.isNotTextNode(newNode)) {
+      
+      this.diffProps(oldNode, newNode, newNode.dom as CustomHTMLElement);
+    }
 
-      children.map((child, index) =>  this.findOldChildAndDiff(oldNode, child, index, newNode));
-
-      if (this.detectNodeUtils.isNotTextNode(newNode)) {
-        this.diffProps(oldNode, newNode, newNode.dom as CustomHTMLElement);
-      }
-
-      Object.assign(oldNode, newNode);
+    Object.assign(oldNode, newNode);
   }
 
   private findOldChildAndDiff(oldNode: VNode<{}>, child: VNode<{}>, index: number, newNode: VNode<{}>) {
