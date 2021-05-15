@@ -7,7 +7,10 @@ matrix:
       env: JOB="testPR"    # only on PR
     - node_js: 12
       if: type IN (pull_request)
-      env: JOB="testPR"
+      env: JOB="integration"
+    - node_js: 12
+      if: type IN (pull_request)
+      env: JOB="mutation"
       
 addons:
   apt:

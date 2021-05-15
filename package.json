@@ -29,7 +29,8 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "jest",
+    "unit": "jest ./test/unit",
+    "integration": "yarn unit && jest ./test/integration",
     "mutation": "npx stryker run",
     "testPR": "yarn test && yarn mutation",
     "cypress:open": "cypress open"
