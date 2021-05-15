@@ -132,5 +132,17 @@ describe("Integration Test for createElement, interact with JSX", () => {
     expect(children[0].props).toStrictEqual(vnodeChild.props);
   });
 
+  it("JSX call createElement, return vnode with key prop", () => {
+    const vnodeAleliElement: VNode = {
+      type: "div",
+      props: {
+        key: 1,
+        children: [],
+      },
+    };
+    const aleliDivElement: HTMLDivElement = <div key={1}></div>;
+    expect(aleliDivElement).toStrictEqual(vnodeAleliElement);
+  });
+
 });
 
