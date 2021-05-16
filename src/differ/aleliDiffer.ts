@@ -16,7 +16,6 @@ export default class AleliDiffer implements Differ{
   }
 
   diffNodes(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void {
-    console.log("type",newNode)
     if (typeof newNode.type !== "string") {
       this.handleDiffClassComponent(newNode,dom,oldNode)
     } else {
