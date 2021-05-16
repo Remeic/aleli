@@ -16,6 +16,7 @@ export default class AleliDiffer implements Differ{
   }
 
   diffNodes(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void {
+    console.log("type",newNode)
     if (typeof newNode.type !== "string") {
       this.handleDiffClassComponent(newNode,dom,oldNode)
     } else {
@@ -105,10 +106,9 @@ export default class AleliDiffer implements Differ{
   }
 
   private handleDiffClassComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void{
-    const classComponent : AleliComponent =  newNode.type as AleliComponent
     if(!newNode.component){
       // @ts-ignore
-      newNode.component = !(newNode.type instanceof AleliComponent) ? new classComponent() : classComponent
+      newNode.component = this.instantiateClassComponent(newNode.type)
     }    
     if ( newNode.component && !newNode.component.isMounted()) {
       newNode.component.mounting();
@@ -141,6 +141,10 @@ export default class AleliDiffer implements Differ{
       index
     );
     this.diffNodes(child, newNode.dom!, oldestChild);
+  }
+
+  private instantiateClassComponent(classComponent: { new(): Component }): Component {
+    return new classComponent();
   }
 }
 

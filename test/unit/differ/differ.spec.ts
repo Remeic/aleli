@@ -2,7 +2,7 @@ import AleliDiffer from "@src/differ/aleliDiffer";
 import { Differ } from "@src/types/differ";
 import { CustomHTMLElement } from "@src/types/renderer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
-import { VNode } from "@src/types/vNode";
+import { Children, VNode } from "@src/types/vNode";
 import {
   mock,
   verify,
@@ -324,7 +324,7 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
   it("aleliDiffer method findOldChildrenIfExists, destroy life cycle is called if old vnode is not reusable and is class component", () => {
     
     const oldVNode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children: [],
       },
@@ -356,7 +356,7 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
   it("aleliDiffer method findOldChildrenIfExists, removeOldChildren should be called if old vnode is not reusable", () => {
     
     const oldVNode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children: [],
       },
@@ -675,7 +675,7 @@ describe('aleliDiffer diffNodes method ', () => {
       }
     }
     const vnode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children: []
       },
@@ -699,7 +699,7 @@ describe('aleliDiffer diffNodes method ', () => {
       }
     }
     const vnode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children: []
       },
@@ -723,7 +723,7 @@ describe('aleliDiffer diffNodes method ', () => {
       }
     }
     const vnode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children: []
       },
@@ -954,10 +954,24 @@ describe('aleliDiffer diffNodes method ', () => {
   });
 
   it('diffNodes method should diff Class Component with istance', () => {
-    
-    const instance : Component = new TestComponent()
-    const spied : Component = spy(instance)
     const root : CustomHTMLElement = document.createElement("div")
+    class DivComponent extends AleliComponent {
+      destroying(): void {
+      }
+      mounting(): void {
+      }
+      render(props: { [other: string]: any; children: Children; }): VNode<{}> {
+        let vnode: VNode = {
+          type: 'div',
+          props: {
+            children: props.children || []
+          }
+        }
+        return vnode
+      }
+      
+    }
+    
     const oldVnode : VNode = {
       type: "div",
       props: {
@@ -966,34 +980,15 @@ describe('aleliDiffer diffNodes method ', () => {
     }
    
     const vnode: VNode = {
-      type:  instance,
+      type: DivComponent,
       props: {
         children: []
       },
     }
+
     aleliDiffer.diffNodes(vnode,root, oldVnode)
     expect(vnode.component).toBeInstanceOf(AleliComponent)
   });
 
-  it('diffNodes method should diff Class Component and instantiate component', () => {
-    const root : CustomHTMLElement = document.createElement("div")
-    const instanceComponent : Component = TestComponent as unknown as TestComponent
-    const oldVnode : VNode = {
-      type: "div",
-      props: {
-        children: []
-      }
-    }
-    const vnode: VNode = {
-      type:  instanceComponent,
-      props: {
-        children: []
-      },
-    }
-    
-    aleliDiffer.diffNodes(vnode,root, oldVnode)
-    expect(vnode.component).toBeInstanceOf(AleliComponent)
-    expect(TestComponent).toHaveBeenCalledTimes(1);
-  });
 
 });

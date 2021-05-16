@@ -280,7 +280,7 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
     }
 
     const vnode: VNode = {
-      type: instanceTestComponent,
+      type: TestComponent,
       props: {
         children:[]
       },
