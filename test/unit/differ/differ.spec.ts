@@ -16,6 +16,8 @@ import TestComponent from "../../__mocks__/testComponent.mock"
 import DetectNodeUtils from "@src/utils/detectNodeUtils";
 import RendererUtilities from "@src/types/rendererUtilities";
 import Component from "@src/types/component";
+import AleliComponent from "@src/components";
+jest.mock("../../__mocks__/testComponent.mock");
 
 describe("aleliDiffer findOldChildrenIfExists method", () => {
   let aleliDiffer : Differ
@@ -326,6 +328,7 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
       props: {
         children: [],
       },
+      component: instanceTestComponent
     };
 
     const vnode: VNode = {
@@ -675,7 +678,8 @@ describe('aleliDiffer diffNodes method ', () => {
       type: instanceTestComponent,
       props: {
         children: []
-      }
+      },
+      component: instanceTestComponent
     }
     when(mockedTestComponent.render(vnode.props)).thenReturn(emtpyVNode)
     when(mockedTestComponent.destroy()).thenCall(()=>{})
@@ -698,7 +702,8 @@ describe('aleliDiffer diffNodes method ', () => {
       type: instanceTestComponent,
       props: {
         children: []
-      }
+      },
+      component: instanceTestComponent
     }
     when(mockedTestComponent.render(vnode.props)).thenReturn(emtpyVNode)
     when(mockedTestComponent.destroy()).thenCall(()=>{})
@@ -721,7 +726,8 @@ describe('aleliDiffer diffNodes method ', () => {
       type: instanceTestComponent,
       props: {
         children: []
-      }
+      },
+      component: instanceTestComponent
     }
     when(mockedTestComponent.render(vnode.props)).thenReturn(emtpyVNode)
     when(mockedTestComponent.destroy()).thenCall(()=>{})
@@ -946,4 +952,48 @@ describe('aleliDiffer diffNodes method ', () => {
     aleliDiffer.diffNodes(vnode,root, oldVnode)
     expect(oldVnode).toEqual(vnode)
   });
+
+  it('diffNodes method should diff Class Component with istance', () => {
+    
+    const instance : Component = new TestComponent()
+    const spied : Component = spy(instance)
+    const root : CustomHTMLElement = document.createElement("div")
+    const oldVnode : VNode = {
+      type: "div",
+      props: {
+        children: []
+      }
+    }
+   
+    const vnode: VNode = {
+      type:  instance,
+      props: {
+        children: []
+      },
+    }
+    aleliDiffer.diffNodes(vnode,root, oldVnode)
+    expect(vnode.component).toBeInstanceOf(AleliComponent)
+  });
+
+  it('diffNodes method should diff Class Component and instantiate component', () => {
+    const root : CustomHTMLElement = document.createElement("div")
+    const instanceComponent : Component = TestComponent as unknown as TestComponent
+    const oldVnode : VNode = {
+      type: "div",
+      props: {
+        children: []
+      }
+    }
+    const vnode: VNode = {
+      type:  instanceComponent,
+      props: {
+        children: []
+      },
+    }
+    
+    aleliDiffer.diffNodes(vnode,root, oldVnode)
+    expect(vnode.component).toBeInstanceOf(AleliComponent)
+    expect(TestComponent).toHaveBeenCalledTimes(1);
+  });
+
 });

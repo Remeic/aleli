@@ -4,6 +4,7 @@ import { Differ } from "@src/types/differ";
 import { VNode } from "@src/types/vNode";
 import Component from "@src/types/component";
 import RendererUtilities from "@src/types/rendererUtilities";
+import AleliComponent from "@src/components";
 
 export default class AleliDiffer implements Differ{
   private renderUtilities : RendererUtilities
@@ -51,9 +52,9 @@ export default class AleliDiffer implements Differ{
             result = oldChild;
         }
         if(result === undefined){
-          if(typeof oldChildNotFinded.type !== 'string'){
-            oldChildNotFinded.type.destroying()
-            oldChildNotFinded.type.destroy()
+          if(typeof oldChildNotFinded.type !== 'string' && oldChildNotFinded.component){
+            oldChildNotFinded.component.destroying()
+            oldChildNotFinded.component.destroy()
           }
           this.renderUtilities.removeOldChild(oldChild);
         }
@@ -104,12 +105,16 @@ export default class AleliDiffer implements Differ{
   }
 
   private handleDiffClassComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>): void{
-    const classComponent : Component = newNode.type as Component
-    if (!classComponent.isMounted()) {
-      classComponent.mounting();
-      classComponent.mount();
+    const classComponent : AleliComponent =  newNode.type as AleliComponent
+    if(!newNode.component){
+      // @ts-ignore
+      newNode.component = !(newNode.type instanceof AleliComponent) ? new classComponent() : classComponent
+    }    
+    if ( newNode.component && !newNode.component.isMounted()) {
+      newNode.component.mounting();
+      newNode.component.mount();
     }
-    this.diffNodes(classComponent.render(newNode.props), dom, oldNode);
+    newNode.component && this.diffNodes(newNode.component.render(newNode.props), dom, oldNode);
   }
 
   private handleDiffBaseComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>) : void {

@@ -1,20 +1,27 @@
+import AleliComponent from "@src/components";
 import createElement from "@src/createElement";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 import { Differ } from "@src/types/differ";
 import RendererUtilities from "@src/types/rendererUtilities";
-import { VNode } from "@src/types/vNode";
+import { Children, VNode } from "@src/types/vNode";
 import DetectNodeUtils from "@src/utils/detectNodeUtils";
+import { mock, instance } from "ts-mockito";
+import TestComponent from "../../__mocks__/testComponent.mock"
 
 describe('Integration Test for AleliDiffer and createElement, interact with JSX', () => {
   let aleliDiffer: Differ
   let rendererUtilities : RendererUtilities
   let detectNodeUtils: DetectNodeUtils
+  let mockedTestComponent: AleliComponent
+  let InstanceTestComponent: TestComponent
 
   beforeAll(()=>{
     rendererUtilities = new AleliRendererUtilities()
     detectNodeUtils = new DetectNodeUtils()
     aleliDiffer = new AleliDiffer(rendererUtilities,detectNodeUtils)
+    mockedTestComponent = mock(TestComponent)
+    InstanceTestComponent = instance(mockedTestComponent)
   })
 
   it('AleliDiffer diffNodes method can update dom element with different type but same props',() => {
@@ -98,7 +105,7 @@ describe('Integration Test for AleliDiffer and createElement, interact with JSX'
         Prova
       </span>
     </div>
-
+   
     aleliDiffer.diffNodes(secondVNode,rootElement,firstVNode)
     const htmlElement: HTMLElement = rootElement.firstChild as HTMLElement
     const divChildExpected : HTMLDivElement | null = htmlElement.querySelector("#id1")
@@ -109,5 +116,32 @@ describe('Integration Test for AleliDiffer and createElement, interact with JSX'
     expect(spanChildExpected).not.toBe(null)
     expect(spanChildExpected!.localName).toBe('span')
   })
+
+  it('AleliDiffer diffNodes method can update dom element with Class Component',() => {
+    class TComponent extends AleliComponent {
+      destroying(): void {
+      }
+      mounting(): void {
+      }
+      render(props: { [other: string]: any; children: Children; }): VNode<{}> {
+        return {
+          type:"span",
+          props: {
+            id:1,
+            children: [] 
+          }
+        }
+      }
+    }
+    const oldVNode: VNode = <div id={1} ></div>
+    const newVNode: VNode = (<TComponent id={1} ></TComponent>)
+    const rootElement : HTMLDivElement = document.createElement("div")
+    const spanElement: HTMLSpanElement = document.createElement("span")
+    spanElement.setAttribute('id',"1")
+    aleliDiffer.diffNodes(newVNode,rootElement,oldVNode)
+    expect(rootElement.firstChild).toStrictEqual(spanElement)
+  })
+
+  
 
 });
