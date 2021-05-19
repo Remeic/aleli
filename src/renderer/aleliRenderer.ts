@@ -1,11 +1,11 @@
 import { VNode } from "@src/types/vNode";
-import { CustomHTMLElement, RendererBase } from "@src/types/renderer";
+import { CustomHTMLElement, Renderer } from "@src/types/renderer";
 import { Differ } from "@src/types/differ";
 import AleliDiffer from "@src/differ/aleliDiffer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
 
-export default class AleliRenderer implements RendererBase {
+export default class AleliRenderer implements Renderer {
   private aleliDiffer: Differ;
   private rendererUtilities:  RendererUtilities;
   private emptyVNode : VNode = { type: "", props: { children: [] } }
