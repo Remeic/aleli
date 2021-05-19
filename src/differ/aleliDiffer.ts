@@ -34,7 +34,6 @@ export default class AleliDiffer implements Differ{
       (this.renderUtilities.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
         let result = undefined
         let oldChildNotFinded : VNode = oldChild
-       
         if (child.props.key && oldChild.props.key) {
           if (
             child.props.key === oldChild.props.key &&
@@ -52,7 +51,7 @@ export default class AleliDiffer implements Differ{
             result = oldChild;
         }
         if(result === undefined){
-          if(typeof oldChildNotFinded.type !== 'string' && oldChildNotFinded.component){
+          if(oldChildNotFinded.component){
             oldChildNotFinded.component.destroying()
             oldChildNotFinded.component.destroy()
           }
@@ -113,6 +112,8 @@ export default class AleliDiffer implements Differ{
       newNode.component.mounting();
       newNode.component.mount();
     }
+    newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode.component.render(newNode.props)) : oldNode.dom;
+    Object.assign(oldNode, newNode);
     newNode.component && this.diffNodes(newNode.component.render(newNode.props), dom, oldNode);
   }
 

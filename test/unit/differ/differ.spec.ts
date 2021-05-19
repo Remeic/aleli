@@ -381,6 +381,8 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
     verify(mockedRendererUtilities.removeOldChild(oldVNode)).once()
   });
 
+
+
 });
 
 
@@ -757,6 +759,75 @@ describe('aleliDiffer diffNodes method ', () => {
     aleliDiffer.diffNodes(vnode,root, oldVnode)
     verify(mockedRendererUtilities.createElement(vnode)).once()
     expect(vnode).toHaveProperty("dom",domElement)
+  });
+
+  it('diffNodes method with class Component should call RendererUtilities createElement to create dom element if oldNode not have one', () => {
+    const root : CustomHTMLElement = document.createElement("div")
+    const domElement : HTMLElement = document.createElement("div")
+
+    const oldVnode : VNode = {
+      type: "h2",
+      props: {
+        children: []
+      }
+    }
+    const vnode: VNode = {
+      type: TestComponent,
+      props: {
+        children: []
+      },
+      component: instanceTestComponent
+    }
+
+    const returnedVNode : VNode = {
+      type: "div",
+      props: {
+        children: []
+      }
+    }
+    
+    when(mockedTestComponent.destroy()).thenCall(()=>{})
+    when(mockedTestComponent.destroying()).thenCall(()=>{})
+    when(mockedTestComponent.render(vnode.props)).thenReturn(returnedVNode)
+    when(mockedRendererUtilities.createElement(instanceTestComponent.render(vnode.props))).thenReturn(domElement)
+    aleliDiffer.diffNodes(vnode,root, oldVnode)
+    verify(mockedRendererUtilities.createElement(instanceTestComponent.render(vnode.props))).once()
+    expect(vnode).toHaveProperty("dom",domElement)
+  });
+
+  it('diffNodes method with class Component should not call RendererUtilities createElement to create dom and reuse old one', () => {
+    const root : CustomHTMLElement = document.createElement("div")
+    const domElement : HTMLElement = document.createElement("div")
+
+    const oldVnode : VNode = {
+      type: TestComponent,
+      props: {
+        children: []
+      },
+      component: instanceTestComponent,
+      dom:domElement
+    }
+    const vnode: VNode = {
+      type: TestComponent,
+      props: {
+        children: []
+      },
+      component: instanceTestComponent
+    }
+
+    const returnedVNode : VNode = {
+      type: "div",
+      props: {
+        children: []
+      }
+    }
+    
+    when(mockedTestComponent.destroy()).thenCall(()=>{})
+    when(mockedTestComponent.destroying()).thenCall(()=>{})
+    when(mockedTestComponent.render(vnode.props)).thenReturn(returnedVNode)
+    when(mockedRendererUtilities.createElement(instanceTestComponent.render(vnode.props))).thenReturn(domElement)
+    aleliDiffer.diffNodes(vnode,root, oldVnode)
+    verify(mockedRendererUtilities.createElement(instanceTestComponent.render(vnode.props))).never()
   });
 
   it('diffNodes method with base Component should set use old vnode dom prop for the new vnode dom prop', () => {
