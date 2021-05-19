@@ -1,9 +1,10 @@
 import Component from "./component";
 
 export interface VNode<T = {}> {
-  type: string | Component;
+  type: string | { new(): Component };
   props: T & { children: Children, [other: string]: any }
 	dom?: HTMLElement | Text 
+  component?: Component
 }
 
 export type AllowedChildrenType =

@@ -11,8 +11,8 @@ export interface Differ{
   ): VNode 
   
   diffProps(
-    oldProps: VNode["props"],
-    newProps: VNode["props"],
+    oldVnode: VNode,
+    newVnode: VNode,
     htmlElement: CustomHTMLElement
-  ): void
+  ): void 
 }

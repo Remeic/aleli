@@ -1,19 +1,19 @@
 import AleliDiffer from "@src/differ/aleliDiffer";
-import { Differ } from "@src/differ/differ";
+import { Differ } from "@src/types/differ";
 import AleliRenderer from "@src/renderer";
 import AleliRendererUtilities from "@src/rendererUtilities/aleliRendererUtilities";
-import { CustomHTMLElement, RendererBase } from "@src/types/renderer";
+import { CustomHTMLElement, Renderer } from "@src/types/renderer";
 import RendererUtilities from "@src/types/rendererUtilities";
 import { VNode } from "@src/types/vNode";
 import { deepEqual, instance, mock, reset, spy, verify } from "ts-mockito";
 
 describe('AleliRenderer render method', () => {
-  let aleliRenderer: RendererBase
+  let aleliRenderer: Renderer
   let mockAleliDiffer : Differ
   let instanceAleliDiffer : Differ
   let mockRendererUtilities : RendererUtilities
   let instanceRendererUtilities: RendererUtilities
-  let spiedAleliRenderer: RendererBase
+  let spiedAleliRenderer: Renderer
   const emptyVNode : VNode = { type: "", props: { children: [] } }
 
   beforeAll(() => {

@@ -1,7 +1,7 @@
 import { Children, VNode } from "@src/types/vNode";
 import AleliComponent from "@src/components/aleliComponent" 
 import Component from "@src/types/component";
-import TestComponent from "../__mocks__/testComponent.mock";
+import TestComponent from "../../__mocks__/testComponent.mock";
 import { instance, mock, reset, when } from "ts-mockito";
 
 

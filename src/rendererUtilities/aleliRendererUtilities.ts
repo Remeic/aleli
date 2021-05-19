@@ -57,6 +57,10 @@ export default class AleliRendererUtilities implements RendererUtilities {
     });
   }
 
+  removeOldChild(oldNode: VNode<{}>): void {
+    if (oldNode.dom) oldNode.dom.remove();
+  }
+
   getOldChildren(oldNode: VNode<{}>): VNode<{}>[] {
     return oldNode.props.children as Array<VNode>;
   }
@@ -72,7 +76,5 @@ export default class AleliRendererUtilities implements RendererUtilities {
     return htmlElement;
   }
 
-  private removeOldChild(oldNode: VNode<{}>): void {
-    if (oldNode.dom) oldNode.dom.remove();
-  }
+  
 }

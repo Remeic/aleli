@@ -3,7 +3,6 @@ import { Children, VNode } from "@src/types/vNode";
 
 export default  class TestComponent extends AleliComponent {
   destroying(): void {
-    throw new Error("Method not implemented.");
   }
   constructor() {
     super();
@@ -19,6 +18,5 @@ export default  class TestComponent extends AleliComponent {
     return vnode
   }
   mounting() {
-    throw new Error("Method not implemented.");
   }
 }
