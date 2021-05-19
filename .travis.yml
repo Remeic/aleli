@@ -11,6 +11,9 @@ matrix:
     - node_js: 12
       if: type IN (pull_request)
       env: JOB="mutation"
+    - node_js: 12
+      if: type IN (pull_request)
+      env: JOB="e2e"
       
 addons:
   apt:
