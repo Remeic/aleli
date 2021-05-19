@@ -2,10 +2,25 @@ import AleliComponent from "@src/components";
 import createElement from "@src/createElement";
 import Component from "@src/types/component";
 import { Children, VNode } from "@src/types/vNode";
-jest.mock("@src/components/aleliComponent");
 
 /** @jsx createElement */
 describe("Integration Test for createElement, interact with JSX", () => {
+  class TComponent extends AleliComponent {
+    destroying(): void {
+    }
+    mounting(): void {
+    }
+    render(props: { [other: string]: any; children: Children; }): VNode<{}> {
+      return {
+        type:"span",
+        props: {
+          id:1,
+          children: [] 
+        }
+      }
+    }
+  }
+
   it("JSX call createElement, return vnode without props and children", () => {
     const vnodeAleliElement: VNode = {
       type: "div",
@@ -129,6 +144,27 @@ describe("Integration Test for createElement, interact with JSX", () => {
     expect(aleliDivElement.type).toBe(AleliComponent as Function);
     const children : Array<VNode> = aleliDivElement.props.children as Array<VNode>
     expect(children[0].type).toBe(AleliComponent as Function);
+    expect(children[0].props).toStrictEqual(vnodeChild.props);
+  });
+
+  it("JSX call createElement, return vnode with class component and children", () => {
+    
+
+    const vnodeChild : VNode = {
+      type: TComponent,
+      props: {
+        children: [],
+      },
+    }
+
+    const aleliDivElement: VNode = (
+      <TComponent>
+        <TComponent></TComponent>
+      </TComponent>
+    );
+    expect(aleliDivElement.type).toBe(TComponent as Function);
+    const children : Array<VNode> = aleliDivElement.props.children as Array<VNode>
+    expect(children[0].type).toBe(TComponent as Function);
     expect(children[0].props).toStrictEqual(vnodeChild.props);
   });
 
