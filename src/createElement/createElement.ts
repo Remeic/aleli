@@ -1,21 +1,20 @@
 import { VNode, Children } from "../types/vNode";
-import DetectNodeUtils from '@src/utils/detectNodeUtils'
 
 function createElement<T = {}>(
   type: VNode["type"],
   props: VNode["props"] & T,
-  ...children: Children[]
+  ...jsxChildren: Children[]
 ): VNode<T> {
-  let actualChildren = children.map((child) => {    
-    return !!child && typeof child === "object" && "props" in child && "type" in child
+  let children = jsxChildren.concat.apply([], jsxChildren).map((child) => {
+    return !!child && typeof child === "object"
       ? child
-      : { type: "$TEXT", props: { textValue: child , children: [] } };
+      : { type: "$TEXT", props: { textValue: child, children: [] } };
   });
+
   return {
     type: type,
-    props: { ...props, children: actualChildren },
+    props: { ...props, children },
   };
 }
-
 
 export default createElement;

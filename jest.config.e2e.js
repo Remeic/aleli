@@ -4,19 +4,11 @@
  */
 
 module.exports = {
-  preset: "ts-jest",
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
+  preset: 'ts-jest',
   moduleNameMapper: {
-    "^@src/(.*)$": "<rootDir>/src/$1",
+    '^@src/(.*)$': '<rootDir>/src/$1',
   },
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
@@ -30,19 +22,13 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  collectCoverage: true,
+  collectCoverage: false,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [
-    "<rootDir>/src/**/*.{js,ts,tsx,jsx}",
-    "!**/*.{test,spec}.{js,ts,tsx,jsx}",
-    "!<rootDir>/test/integration/*.{test,spec}.{js,ts,tsx,jsx}",
-    "!<rootDir>/src/index.ts",
-    "!<rootDir>/src/jsx.d.ts"
-  ],
+  //collectCoverageFrom: [],
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  //coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -61,14 +47,15 @@ module.exports = {
   // ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
+  // "coverageThreshold": {
+  //   "global": {
+  //     "branches": 100,
+  //     "functions": 100,
+  //     "lines": 100,
+  //     "statements": 100
+  //   }
+  // },
+
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
@@ -171,14 +158,16 @@ module.exports = {
   // Adds a location field to test results
   // testLocationInResults: false,
 
-  // The glob patterns Jest uses to detect test files
-  // testMatch: [
-  //   "**/__tests__/**/*.[jt]s?(x)",
-  //   "**/?(*.)+(spec|test).[tj]s?(x)"
-  // ],
+  //The glob patterns Jest uses to detect test files
+  testMatch: [
+    "**/test/e2e/**/*.[jt]s?(x)",
+    "**/test/e2e/?(*.)+(spec|test).[tj]s?(x)",
+    "!**/.stryker-tmp/**/?(*.)+(spec|test).[tj]s?(x)"
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ["node_modules"],
+  "testPathIgnorePatterns": ["node_modules"],
+
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
@@ -215,4 +204,5 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+  
 };
