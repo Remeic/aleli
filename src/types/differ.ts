@@ -15,4 +15,5 @@ export interface Differ{
     newVnode: VNode,
     htmlElement: CustomHTMLElement
   ): void 
+
 }

@@ -241,9 +241,10 @@ describe("aleliDiffer findOldChildrenIfExists method", () => {
     ]);
 
     aleliDiffer.findOldChildrenIfExists(vnode, newChildVNode, 0)
-    expect(oldVNode.reusable).not.toBe(true)
+    expect(oldVNode.reusable).toBe(false)
     expect(oldVNodeSecond.reusable).toBe(true)
   });
+
 
 
   it("aleliDiffer method findOldChildrenIfExists, if key exists in new VNode and not in the old one, should return emtpy vnode", () => {

@@ -23,44 +23,39 @@ export default class AleliDiffer implements Differ{
     }
   }
 
-
   findOldChildrenIfExists(
     oldNode: VNode<{}>,
     child: VNode<{}>,
     index: number
   ): VNode {
-    const emtpyVNode : VNode = { type: "", props: { children: [] } }
-    return (
-      (this.renderUtilities.getOldChildren(oldNode).find((oldChild, oldChildindex) => {
-        let result = undefined
-        let oldChildNotFinded : VNode = oldChild
-        if (child.props.key && oldChild.props.key) {
-          if (
-            child.props.key === oldChild.props.key &&
-            child.type === oldChild.type
-            
-          ) {
+    const emtpyVNode: VNode = { type: "", props: { children: [] } };
+    const findedVNode: VNode = this.renderUtilities
+      .getOldChildren(oldNode)
+      .find((oldChild) => {
+        let result = undefined;
+        if (
+          child.props.key &&
+          oldChild.props.key &&
+          child.props.key === oldChild.props.key &&
+          child.type === oldChild.type
+        ) {
+          oldChild.reusable = true;
+          result = oldChild;
+        } else if (child.props.key || oldChild.props.key) {
+          this.markVNodeNotReusable(oldChild);
+        } else {
+          if (child.type === oldChild.type) {
+            oldChild.reusable = true;
             result = oldChild;
+          } else {
+            this.markVNodeNotReusable(oldChild);
           }
-        } 
-        else if (child.props.key || oldChild.props.key){
-          result = undefined
         }
-        else {
-          if (child.type === oldChild.type)
-            result = oldChild;
-        }
-        if(result === undefined){
-          if(oldChildNotFinded.component){
-            oldChildNotFinded.component.destroying()
-            oldChildNotFinded.component.destroy()
-          }
-          this.renderUtilities.removeOldChild(oldChild);
-        }
+         
         return result;
+      }) as VNode;
 
-      }) as VNode) || emtpyVNode
-    );
+    return findedVNode || emtpyVNode;
   }
 
   diffProps(
@@ -70,6 +65,14 @@ export default class AleliDiffer implements Differ{
   ): void {
     this.addNewProps(oldVnode,newVnode,htmlElement)
     this.removeOldProps(oldVnode,newVnode,htmlElement)
+  }
+
+  private destroyNotReusableComponent(notReusableVNode: VNode<{}>): void{
+    if (notReusableVNode.component) {
+      notReusableVNode.component.destroying();
+      notReusableVNode.component.destroy();
+    }
+    this.renderUtilities.removeOldChild(notReusableVNode);
   }
 
   private addNewProps(
@@ -114,7 +117,7 @@ export default class AleliDiffer implements Differ{
     }
     newNode.dom = !oldNode.dom ? this.renderUtilities.createElement(newNode.component.render(newNode.props)) : oldNode.dom;
     Object.assign(oldNode, newNode);
-    newNode.component && this.diffNodes(newNode.component.render(newNode.props), dom, oldNode);
+    this.diffNodes(newNode.component.render(newNode.props), dom, oldNode);
   }
 
   private handleDiffBaseComponent(newNode: VNode<{}>, dom: CustomHTMLElement | Text, oldNode: VNode<{}>) : void {
@@ -124,10 +127,13 @@ export default class AleliDiffer implements Differ{
     
     let children: Array<VNode> = newNode.props.children as Array<VNode>;
     children.map((child, index) =>  this.findOldChildAndDiff(oldNode, child, index, newNode));
-   
+        
+    this.renderUtilities
+    .getOldChildren(oldNode)
+    .map(oldChild => 
+      !oldChild.reusable && this.destroyNotReusableComponent(oldChild))
 
     if (this.detectNodeUtils.isNotTextNode(newNode)) {
-      
       this.diffProps(oldNode, newNode, newNode.dom as CustomHTMLElement);
     }
 
@@ -146,5 +152,10 @@ export default class AleliDiffer implements Differ{
   private instantiateClassComponent(classComponent: { new(): Component }): Component {
     return new classComponent();
   }
+
+  private markVNodeNotReusable(notReusableVNode: VNode<{}>): void {
+    !Boolean(notReusableVNode.reusable) && (notReusableVNode.reusable = false);
+  }
+  
 }
 
