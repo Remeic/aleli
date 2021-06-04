@@ -257,13 +257,13 @@ describe("Integration Test for aleliDiffer, integrate Differ with RendererUtilit
     const vnode: VNode = {
       type: "div",
       props: {
-        children:[secondOldChild,newChild]
+        children:[ secondOldChild,newChild]
       }
     }
 
     aleliDiffer.diffNodes(vnode,root,oldVnode)
     const child : HTMLElement | null = root.firstChild as HTMLElement
-    expect(child).toStrictEqual(divElement)
+    expect(child.firstChild).toStrictEqual(secondOldChildElement)
   })
 
   it('aleliDiffer diffNodes method should diff base component with class component', () => {
