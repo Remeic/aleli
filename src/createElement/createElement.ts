@@ -5,7 +5,8 @@ function createElement<T = {}>(
   props: VNode["props"] & T,
   ...jsxChildren: Children[]
 ): VNode<T> {
-  let children : Array<Children> = new Array().concat.apply([], jsxChildren).map((child) => {
+  const flattenChildren : Array<Children> = Array.prototype.concat.apply([], jsxChildren)
+  const children : Array<Children> = flattenChildren.map((child) => {
     return !!child && typeof child === "object"
       ? child
       : { type: "$TEXT", props: { textValue: child, children: [] } };
