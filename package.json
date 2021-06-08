@@ -34,6 +34,6 @@
     "integration": "yarn unit && jest -c jest.config.integration.js",
     "e2e": "jest -c jest.config.e2e.js",
     "mutation": "npx stryker run",
-    "testPR": "yarn integration  && yarn mutation",
+    "testPR": "yarn integration  && yarn mutation"
   }
 }
