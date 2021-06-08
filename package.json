@@ -1,6 +1,6 @@
 {
   "name": "aleli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Virtual dom prototype implemeted with TDD and Typescript",
   "source": "src/index.ts",
   "main": "./dist/foo.js",
@@ -35,6 +35,5 @@
     "e2e": "jest -c jest.config.e2e.js",
     "mutation": "npx stryker run",
     "testPR": "yarn integration  && yarn mutation",
-    "cypress:open": "cypress open"
   }
 }
