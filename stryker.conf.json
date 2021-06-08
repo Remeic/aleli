@@ -10,5 +10,7 @@
   "coverageAnalysis": "perTest",
   "checkers": ["typescript"],
   "tsconfigFile": "tsconfig.json",
-  "mutator": {  "excludedMutations": ["StringLiteral"] }
+  "mutator": {  "excludedMutations": ["StringLiteral"] },
+  "commandRunner": { "command": "yarn run unit" },
+  "ignorePatterns": ["test/integration/**/","test/e2e/**/", "coverage"]
 }

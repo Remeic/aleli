@@ -5,6 +5,7 @@ export interface VNode<T = {}> {
   props: T & { children: Children, [other: string]: any }
 	dom?: HTMLElement | Text 
   component?: Component
+  reusable?: Boolean | null;
 }
 
 export type AllowedChildrenType =
