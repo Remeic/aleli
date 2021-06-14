@@ -4,7 +4,6 @@ import { Differ } from "@src/types/differ";
 import { VNode } from "@src/types/vNode";
 import Component from "@src/types/component";
 import RendererUtilities from "@src/types/rendererUtilities";
-import AleliComponent from "@src/components";
 
 export default class AleliDiffer implements Differ{
   private renderUtilities : RendererUtilities
