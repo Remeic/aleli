@@ -3,7 +3,6 @@ import { VNode } from "@src/types/vNode";
 import { fireEvent } from "@testing-library/dom";
 /** @jsx createElement */
 
-const handleClick = jest.fn()
 class HelloWorldComponent extends AleliComponent {
   handleClick(person: any) {
     if (person) {
@@ -72,7 +71,6 @@ describe("Aleli application e2e tests", () => {
   let aleliRenderer: AleliRenderer;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     aleliRenderer = new AleliRenderer();
     root = document.createElement("div");
   });
@@ -121,16 +119,14 @@ describe("Aleli application e2e tests", () => {
     expect(child.getAttribute('name')).toEqual(name)
   })
 
-  it("Aleli can render class component with click listener", async () => {
-    let tmpObj = {
-      name:"old"
+  it("Aleli can render class component with click listener", async (done) => {    
+    const handleClick = (e: Event) => {
+        done()
     }
-    
     const component = (<ClickComponent handleClick={handleClick} />)
     aleliRenderer.render(component,root)
     const child : HTMLElement = root.firstChild as HTMLElement
     await fireEvent.click(child.firstChild as HTMLElement)
-    expect(handleClick).toHaveBeenCalled()
 
   })
 
